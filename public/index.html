@@ -515,7 +515,7 @@ body.theme-forest .choices button:hover{border-color:#aaff9c;box-shadow:0 0 18px
   <div class="room-header"><div><b id="currentRoomTitle">Room</b><div class="room-meta"><span class="pill" id="currentRoomType">PRIVATE</span><span class="pill">Code: <b id="currentRoomCode">—</b></span></div></div><span class="room-live">● IN REALM</span></div>
   <div class="online-members" id="onlineMembers"></div>
   <div class="online-room-actions"><button class="secondary" id="copyInvite">Copy Invite Code</button><button class="secondary" id="leaveRoom">Leave Realm</button></div>
-  <div class="online-room-actions online-battle-actions"><button class="secondary" id="chooseChampion">Choose / Change Champion</button><button class="primary" id="startOnlineMatch" disabled>Start Online Battle</button></div>
+  <div class="online-room-actions online-battle-actions"><button class="secondary" id="readyToggle">✦ Ready Up</button><button class="secondary" id="chooseChampion">Choose / Change Champion</button><button class="primary" id="startOnlineMatch" disabled>Start Online Battle</button></div>
   <p class="smallprint" id="readyHint">Choose a champion to ready up. The host can start when at least two players are ready.</p>
  </div>
  <div class="notice" id="onlineNotice" aria-live="polite"></div>
@@ -608,8 +608,10 @@ body.theme-forest .choices button:hover{border-color:#aaff9c;box-shadow:0 0 18px
  function renderRoom(){const el=$('onlineRoom');el.hidden=!room;if(!room)return;
   $('currentRoomTitle').textContent=room.name||'Mythic Clash Room';$('currentRoomType').textContent=room.isPublic?'PUBLIC':'PRIVATE';$('currentRoomCode').textContent=room.code;
   $('onlineMembers').innerHTML='';room.players.forEach((p)=>{const tag=document.createElement('span');tag.className='online-member';tag.textContent=(p.name||'Player')+(p.id===myId?' (You)':'')+(p.ready?' ✓':' · choosing hero');$('onlineMembers').appendChild(tag)});
-  const ready=room.players.filter(p=>p.ready).length, host=room.hostId===myId;
-  $('readyHint').textContent=room.gameStarted?'Battle in progress — rejoin the action below.':`${ready}/${room.players.length} champions ready. ${host?'You are the host.':'Waiting for the host to start.'}`;
+  const ready=room.players.filter(p=>p.ready).length, host=room.hostId===myId, me=room.players.find(p=>p.id===myId);
+  $('readyHint').textContent=room.gameStarted?'Battle in progress — rejoin the action below.':`${ready}/${room.players.length} players ready. ${host?'You are the host.':'Waiting for the host to start.'}`;
+  $('readyToggle').textContent=me&&me.ready?'✓ Ready! (Click to unready)':'✦ Ready Up';
+  $('readyToggle').disabled=!!room.gameStarted;
   $('startOnlineMatch').hidden=!host;$('startOnlineMatch').disabled=!!room.gameStarted||room.players.length<2||ready!==room.players.length;
   $('startOnlineMatch').textContent=room.gameStarted?'Battle in progress':'Start Online Battle';
   $('chooseChampion').disabled=!!room.gameStarted;
@@ -623,6 +625,7 @@ body.theme-forest .choices button:hover{border-color:#aaff9c;box-shadow:0 0 18px
  $('joinPrivate').onclick=()=>{if(ensure()){const code=$('joinCode').value.trim().toUpperCase();if(!code){status('Enter a room code first.');return}socket.emit('room:join',{code,name:playerName()})}};
  $('refreshPublic').onclick=()=>{if(ensure())socket.emit('rooms:list')};
  $('leaveRoom').onclick=()=>{if(ensure()&&room)socket.emit('room:leave')};
+ $('readyToggle').onclick=()=>{if(ensure()&&room){const me=room.players.find(p=>p.id===myId);socket.emit('room:ready',{ready:!(me&&me.ready)})}};
  $('copyInvite').onclick=async()=>{if(!room)return;try{await navigator.clipboard.writeText(room.code);status('Room code copied!')}catch(e){status('Your room code is '+room.code)}};
  $('chooseChampion').onclick=()=>{if(window.startGame)window.startGame()};
  $('startOnlineMatch').onclick=()=>{if(!ensure()||!room)return;socket.emit('onlinebattle:start',{bank:window.MYTHIC_BANK||[],duration:$('duration').value,topic:$('topic').value,difficulty:$('difficulty').value})};

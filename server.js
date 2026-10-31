@@ -90,6 +90,7 @@ function startOnlineBattle(socket,payload){
  const room=rooms.get(socket.data.roomCode);if(!room){socket.emit('game:error','Join a lobby first.');return}
  if(room.hostId!==socket.id){socket.emit('game:error','Only the host can start the online battle.');return}
  if(room.players.length<2){socket.emit('game:error','At least 2 players must join before starting.');return}
+ if(!room.players.every(p=>p.ready)){socket.emit('game:error','Everyone must Ready Up before the host starts.');return}
  let bank=Array.isArray(payload?.bank)?payload.bank.filter(q=>q&&typeof q.q==='string'&&Array.isArray(q.a)&&q.a.length>=2&&Number.isInteger(Number(q.c))).slice(0,1500):[];
  if(!bank.length){socket.emit('game:error','No trivia questions were provided.');return}
  if(room.battle?.timer)clearInterval(room.battle.timer);
@@ -121,6 +122,14 @@ io.on('connection',socket=>{
     joinRoom(socket,room.code,payload?.name);
   });
   socket.on('rooms:list',()=>socket.emit('rooms:list',[...rooms.values()].filter(r=>r.isPublic).map(r=>({code:r.code,name:r.name,players:r.players.length})).sort((a,b)=>b.players-a.players)));
+  socket.on('room:ready',payload=>{
+   const room=rooms.get(socket.data.roomCode);
+   if(!room){socket.emit('room:error','Join a lobby first.');return}
+   if(room.battle&&!room.battle.done){socket.emit('room:error','The battle has already started.');return}
+   const player=room.players.find(p=>p.id===socket.id);
+   if(!player){socket.emit('room:error','You are not in this lobby.');return}
+   player.ready=!!payload?.ready;emitRoom(room);
+  });
   socket.on('onlinebattle:start',payload=>startOnlineBattle(socket,payload));
   socket.on('onlinebattle:answer',payload=>{
    const room=rooms.get(socket.data.roomCode),b=room?.battle,q=b?.question;
