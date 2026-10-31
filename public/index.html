@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mythic Clash — Trivia Battle</title>
+<style>
+:root{--bg:#071626;--panel:#102b43;--panel2:#173b56;--ice:#75dcff;--gold:#ffd078;--ink:#effaff;--muted:#a9c7d9;--green:#77e6ad;--red:#ff8e91}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1d5274 0,#0a2138 46%,#061321 100%);color:var(--ink);font:15px/1.45 system-ui,Segoe UI,Arial,sans-serif;min-height:100vh}
+main{max-width:1120px;margin:auto;padding:22px 16px 42px}.hero{text-align:center;margin-bottom:18px}.eyebrow{text-transform:uppercase;letter-spacing:.2em;font-weight:800;font-size:.75rem;color:var(--ice)}h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1;margin:9px 0;background:linear-gradient(90deg,#fff,#8ce4ff);background-clip:text;color:transparent}.sub{color:var(--muted);margin:0}
+.card{background:#0b1d2be8;border:1px solid #8ddcff36;border-radius:18px;padding:16px;box-shadow:0 16px 40px #0003}.mountain{height:115px;border-radius:13px;margin-bottom:15px;position:relative;overflow:hidden;background:linear-gradient(#245a7e,#c7f0ff)}.sun{position:absolute;right:12%;top:15px;width:34px;height:34px;background:#fff3c9;border-radius:50%;box-shadow:0 0 30px #fff}.peak{position:absolute;bottom:-5px;width:0;height:0;border-left:130px solid transparent;border-right:130px solid transparent;border-bottom:130px solid #e8f8ff}.peak:after{content:"";position:absolute;left:-28px;top:28px;border-left:28px solid transparent;border-right:28px solid transparent;border-bottom:35px solid #a8d8ef}.p1{left:0;transform:scale(.7);transform-origin:bottom}.p2{left:25%;border-bottom-color:#f8fdff}.p3{right:2%;transform:scale(.85);transform-origin:bottom}
+.setup{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:.8rem;color:var(--muted);font-weight:700}.field select,.field input{background:#0b2134;border:1px solid #4e7892;color:var(--ink);padding:10px;border-radius:9px;font:inherit}
+button{font:inherit;font-weight:800;border:0;border-radius:10px;padding:11px 14px;cursor:pointer;transition:transform .12s,filter .12s}button:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}button:disabled{opacity:.42;cursor:not-allowed}.primary{background:linear-gradient(90deg,#66d4ff,#b8f1ff);color:#082034}.secondary{background:#21435e;color:var(--ink);border:1px solid #ffffff20}.tiny{font-size:.78rem;padding:7px 9px}.topbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:15px 0}.pill{background:#102e47;border:1px solid #7ddcff44;padding:7px 11px;border-radius:999px;font-size:.83rem}.timerwrap{flex:1;min-width:170px}.timerlabel{display:flex;justify-content:space-between;color:var(--muted);font-size:.82rem;margin-bottom:5px}.track{height:9px;background:#29465a;border-radius:20px;overflow:hidden}.track div{height:100%;width:100%;background:var(--ice);transition:width .1s linear}
+.question{background:#f1f9ff;color:#112c40;border-radius:14px;padding:19px;margin-top:12px}.qmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#385a71;font-weight:800;font-size:.78rem;text-transform:uppercase}.diff{padding:4px 9px;border-radius:99px}.Easy{background:#d9f8e6;color:#17623d}.Medium{background:#fff0c8;color:#775000}.Hard{background:#ffdddd;color:#8b2525}.question h2{font-size:clamp(1.2rem,3vw,1.7rem);line-height:1.3;margin:12px 0}.choices{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.choice{background:white;color:#14344b;border:2px solid #c9deeb;text-align:left;min-height:48px}.choice.correct{background:#d9f8e6;border-color:#48b77c}.choice.wrong{background:#ffe0e0;border-color:#e36a6a}.players{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}.player{background:linear-gradient(145deg,#153750,#0b2033);border:1px solid #ffffff1e;border-radius:14px;padding:12px;min-width:0}.player.dead{opacity:.5;filter:grayscale(.8)}.playerhead{display:flex;justify-content:space-between;gap:5px;align-items:center;margin-bottom:7px}.playername{font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hpnum{font-size:.8rem;color:var(--muted);white-space:nowrap}.health{height:9px;background:#2a4559;border-radius:99px;overflow:hidden}.health div{height:100%;background:linear-gradient(90deg,#3ec4ff,#a9edff);transition:width .25s}.player.dead .health div{background:#7a8790}.pstats{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin:7px 0}.targetrow{display:flex;gap:6px;align-items:center;margin:8px 0}.targetrow label{font-size:.75rem;color:var(--muted)}.targetrow select{width:100%;min-width:0;background:#092033;color:white;border:1px solid #41647c;border-radius:7px;padding:6px}.playeractions{display:flex;gap:6px;align-items:center}.playeractions button{flex:1;min-width:0}.playerstatus{font-size:.78rem;color:#c6e7f7;min-height:18px;margin-top:7px}.notice{text-align:center;min-height:26px;margin:13px 0;color:#cdeeff;font-weight:800}.footer{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}.smallprint{font-size:.8rem;color:var(--muted);margin-top:13px}.overlay{display:none;position:fixed;inset:0;background:#020914dc;z-index:5;place-items:center;padding:18px}.overlay.show{display:grid}.modal{max-width:500px;width:100%;text-align:center;padding:28px;border-radius:18px;background:#102b43;border:1px solid #75dcff77}.modal h2{font-size:2rem;margin:8px}.modal p{color:var(--muted)}@media(max-width:760px){.setup{grid-template-columns:repeat(2,1fr)}.players{grid-template-columns:repeat(2,minmax(0,1fr))}.choices{grid-template-columns:repeat(2,1fr)}}@media(max-width:440px){.players{grid-template-columns:1fr}.topbar{align-items:stretch}.timerwrap{order:3;flex-basis:100%}}
+
+/* Epic fantasy lobby upgrade */
+:root{--gold:#ffd47d;--ice:#8ceaff}
+body{background:radial-gradient(ellipse at 50% -10%,#315b83 0,#101f3d 42%,#050b19 100%);background-attachment:fixed}
+main{max-width:1240px;padding-top:28px}
+.hero{margin-bottom:22px;position:relative}.hero:before,.hero:after{content:"✦";position:absolute;top:20px;color:#ffd47d;font-size:28px;text-shadow:0 0 20px #ffdc8a88}.hero:before{left:8%}.hero:after{right:8%}
+.eyebrow{color:#ffd47d;letter-spacing:.24em}h1{background:linear-gradient(180deg,#fff8d9 0%,#ffe09a 42%,#9ce7ff 100%);background-clip:text;filter:drop-shadow(0 4px 16px #66cfff44);letter-spacing:.04em}
+.card{background:linear-gradient(145deg,#101f3bf2,#091426f5);border:1px solid #d6c17c55;box-shadow:0 24px 70px #0008,inset 0 1px #ffffff12;border-radius:22px;padding:clamp(14px,2.2vw,24px)}
+.mountain{height:clamp(130px,18vw,205px);border:1px solid #a6e8ff66;box-shadow:inset 0 0 55px #70d6ff33,0 10px 30px #0004;background:linear-gradient(#132c57 0%,#4c83aa 55%,#c9efff 100%)}.sun{background:#ffe7a3;box-shadow:0 0 35px #fff2c9,0 0 90px #9fe6ff66}.peak{filter:drop-shadow(0 0 12px #bdefff55)}
+.sectiontitle{display:flex;align-items:center;gap:10px;margin:18px 0 10px;font-size:.9rem;letter-spacing:.13em;text-transform:uppercase;color:#d8eaff;font-weight:900}.sectiontitle:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#d6c17c66,transparent)}
+.mapgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.mapcard{position:relative;min-height:125px;text-align:left;overflow:hidden;padding:0;border:1px solid #ffffff2b;border-radius:15px;color:#fff;background:#101d35;transition:transform .18s,border-color .18s,box-shadow .18s}
+.mapcard:hover{transform:translateY(-3px);filter:brightness(1.1)}.mapcard.selected{border:2px solid #ffdc8d;box-shadow:0 0 0 2px #ffdc8d22,0 0 25px #ffd47d25}
+.mapart{height:78px;position:relative;display:flex;align-items:center;justify-content:center;font-size:42px;overflow:hidden}.mapart:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,#ffffff33,transparent 60%)}.mapart span{position:relative;filter:drop-shadow(0 5px 10px #0008)}
+.mapcard[data-map="frozen"] .mapart{background:linear-gradient(150deg,#152b60,#69b5d9 60%,#e0f8ff)}.mapcard[data-map="halloween"] .mapart{background:linear-gradient(150deg,#160f37,#5c287b 55%,#f07837)}.mapcard[data-map="christmas"] .mapart{background:linear-gradient(150deg,#123e4a,#227c65 55%,#e4f4ff)}.mapcard[data-map="forest"] .mapart{background:linear-gradient(150deg,#0c3b35,#397e4a 60%,#b1e7a2)}
+.mapname{display:block;font-weight:900;padding:8px 10px 0;font-size:.9rem}.mapdesc{display:block;padding:0 10px 10px;font-size:.72rem;color:#b9cce2}
+.seasonbadge{position:absolute;top:7px;right:7px;background:#0b1326bb;border:1px solid #ffffff2c;border-radius:999px;padding:3px 7px;font-size:.62rem;font-weight:900;letter-spacing:.05em}
+.setup{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.field label{color:#c6d8f0;text-transform:uppercase;letter-spacing:.07em;font-size:.72rem}.field select,.field input{background:#09142a;border-color:#63759d;color:#fff;box-shadow:inset 0 1px #ffffff0b}.field select:focus,.field input:focus{outline:2px solid #85dfff;outline-offset:1px}
+.primary{background:linear-gradient(110deg,#ffe6a3,#ffc85c 48%,#a8eaff);color:#14223b;box-shadow:0 5px 18px #ffd47d25}.secondary{background:linear-gradient(135deg,#263b62,#172641);border:1px solid #ffffff2b}.footer{margin-top:15px}.footer button{min-width:150px;padding:13px 20px}.topbar{margin:18px 0}.pill{background:#0d1a31;border-color:#d6c17c55}.question{box-shadow:0 10px 35px #0003;border:1px solid #ffffffb8}.player{border-color:#b8dfff24}.smallprint{line-height:1.6}.lobbytools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:14px 0 2px}.musicbutton{display:flex;align-items:center;gap:8px}.statuschip{font-size:.78rem;color:#b8d9ef}.sound-on{color:#b8f5d3}
+@media(max-width:800px){.mapgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.setup{grid-template-columns:repeat(2,minmax(0,1fr))}.hero:before{left:1%}.hero:after{right:1%}}
+@media(max-width:430px){.mapgrid{gap:7px}.mapcard{min-height:115px}.mapart{height:65px}.mapname{font-size:.82rem}.mapdesc{font-size:.68rem}}
+
+
+/* Topic picker, turn guidance, and short battle cutscenes */
+.setup{grid-template-columns:repeat(5,minmax(0,1fr))}
+.turnbanner{display:flex;justify-content:center;align-items:center;text-align:center;min-height:42px;margin:14px 0 0;padding:9px 12px;border:1px solid #ffd47d55;border-radius:12px;background:linear-gradient(90deg,#101b31cc,#273452cc,#101b31cc);color:#ffe6a6;font-weight:900;letter-spacing:.04em}
+.question{position:relative;overflow:hidden;background:linear-gradient(145deg,#f6fbff,#dceeff);border:2px solid #ffe0a0;box-shadow:0 0 0 3px #ffd47d20,0 16px 40px #0005}
+.choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice{position:relative;min-height:58px;padding:12px 14px;border-radius:11px;border-color:#b5cfe1;font-weight:850;box-shadow:0 3px 0 #b4c9d7;transition:transform .12s,box-shadow .12s,border-color .12s,background .12s}
+.choice:not(:disabled):hover{transform:translateY(-2px);border-color:#b88a31;box-shadow:0 5px 0 #b88a31}
+.choice:disabled{opacity:.72}
+.choice.correct{background:#d9f8e6;border-color:#48b77c;box-shadow:0 3px 0 #48b77c}
+.choice.wrong{background:#ffe0e0;border-color:#e36a6a;box-shadow:0 3px 0 #e36a6a}
+.player.active-turn{border-color:#ffdc8d;box-shadow:0 0 0 2px #ffdc8d25,0 0 25px #ffd47d1d;transform:translateY(-2px)}
+.turntag{display:inline-block;margin:0 0 7px;padding:3px 8px;border-radius:99px;background:#ffe2a0;color:#34250c;font-size:.68rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.cutscene{display:none;position:fixed;inset:0;z-index:9;overflow:hidden;place-items:center;background:radial-gradient(ellipse at center,#385b88d9 0,#0a1125ee 62%,#02040bf5 100%);backdrop-filter:blur(5px);pointer-events:none}
+.cutscene.show{display:grid;animation:sceneFade .16s ease-out}
+.cutscene:before,.cutscene:after{content:"";position:absolute;width:140vmax;height:2px;left:-20vmax;top:50%;background:linear-gradient(90deg,transparent,#fff4c5,#8fe9ff,transparent);box-shadow:0 0 30px #b9f0ff;transform:rotate(-22deg);animation:slash 1s ease-out both}
+.cutscene:after{transform:rotate(22deg);animation-delay:.08s}
+.cutscene-rays{position:absolute;inset:-30%;background:repeating-conic-gradient(from 0deg at 50% 50%,#ffffff0d 0deg 5deg,transparent 5deg 15deg);animation:spinRays 7s linear infinite}
+.cutscene-content{position:relative;z-index:1;width:min(620px,90vw);padding:28px 24px;text-align:center;border:1px solid #ffe5a1a6;border-radius:24px;background:linear-gradient(145deg,#14213cef,#091326f2);box-shadow:0 0 0 5px #ffe4a01c,0 0 80px #69dfff45;animation:impact .38s cubic-bezier(.16,.9,.25,1.2) both}
+.cutscene-icon{font-size:clamp(3rem,8vw,5rem);filter:drop-shadow(0 0 20px #9beaff);animation:iconPop .45s ease-out both}
+.cutscene-kicker{margin-top:8px;color:#ffe3a0;font-weight:950;letter-spacing:.28em;font-size:.75rem}
+.cutscene-content h2{margin:8px 0;font-size:clamp(2rem,6vw,3.6rem);line-height:1;background:linear-gradient(#fff7d9,#ffd16e,#9deaff);color:transparent;background-clip:text;text-shadow:0 0 24px #7ddfff2b}
+.cutscene-content p{margin:0;color:#e4f4ff;font-size:1.05rem;font-weight:750}
+@keyframes sceneFade{from{opacity:0}to{opacity:1}}@keyframes impact{from{transform:scale(.72) translateY(25px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}@keyframes iconPop{0%{transform:scale(.2) rotate(-20deg)}70%{transform:scale(1.18) rotate(5deg)}100%{transform:scale(1) rotate(0)}}@keyframes slash{0%{opacity:0;transform:translateX(-25%) rotate(-22deg)}35%{opacity:1}100%{opacity:0;transform:translateX(25%) rotate(-22deg)}}@keyframes spinRays{to{transform:rotate(360deg)}}
+@media(max-width:1000px){.setup{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.setup{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.choices{grid-template-columns:1fr}.cutscene-content{padding:22px 14px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+
+/* Living lobby: settings react with magical pulses, rune sparks and preview toasts */
+.field{position:relative;isolation:isolate}
+.field:after{content:"✦  ✧  ✦";position:absolute;right:10px;top:29px;letter-spacing:7px;font-size:10px;color:#ffe6a0;opacity:0;pointer-events:none;transform:translateY(7px) scale(.7)}
+.field.setting-change{animation:settingPulse .58s cubic-bezier(.2,.8,.2,1)}
+.field.setting-change:after{animation:runeSpark .72s ease-out both}
+.field.setting-change select,.field.setting-change input{border-color:#ffe09a;box-shadow:0 0 0 2px #ffd47d25,0 0 24px #ffd47d45,inset 0 0 12px #7adfff12}
+.field select,.field input{transition:border-color .2s,box-shadow .2s,background .2s,transform .2s}
+.field.setting-change select{animation:controlBump .38s ease-out}
+.settings-toast{position:fixed;z-index:12;left:50%;top:18px;transform:translate(-50%,-18px) scale(.88);opacity:0;pointer-events:none;padding:11px 18px;border:1px solid #ffe4a0aa;border-radius:999px;background:linear-gradient(110deg,#152544f5,#253c61f5);color:#fff1c5;font-weight:950;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 0 35px #79dfff40,0 8px 30px #0008;white-space:nowrap;max-width:calc(100vw - 24px);overflow:hidden;text-overflow:ellipsis}
+.settings-toast.show{animation:toastRune 1.35s ease-out both}
+#mapBanner{transition:background .35s,filter .35s,box-shadow .35s}
+#mapBanner.realm-shift{animation:realmShift .8s ease-out}
+.mapcard.selected .mapart span{animation:mapSigil .65s cubic-bezier(.2,.8,.2,1)}
+.mapcard.selected:before{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 20%,#fff5c955 48%,transparent 72%);transform:translateX(-130%);animation:mapShimmer .8s ease-out}
+.sectiontitle{transition:color .25s,text-shadow .25s}
+.sectiontitle.lit{color:#fff0bd;text-shadow:0 0 16px #ffd47d88}
+@keyframes settingPulse{0%{transform:scale(1)}35%{transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes runeSpark{0%{opacity:0;transform:translateY(8px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-15px) scale(1.15)}}
+@keyframes controlBump{0%{transform:scale(1)}45%{transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes toastRune{0%{opacity:0;transform:translate(-50%,-18px) scale(.86)}15%,72%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-10px) scale(.96)}}
+@keyframes realmShift{0%{filter:brightness(1);box-shadow:0 0 0 #8ceaff00}35%{filter:brightness(1.35);box-shadow:0 0 35px #8ceaff77}100%{filter:brightness(1);box-shadow:inset 0 0 55px #70d6ff33,0 10px 30px #0004}}
+@keyframes mapSigil{0%{transform:scale(.7) rotate(-12deg);filter:brightness(1)}55%{transform:scale(1.35) rotate(8deg);filter:brightness(1.5) drop-shadow(0 0 18px #ffe6a0)}100%{transform:scale(1) rotate(0);filter:drop-shadow(0 5px 10px #0008)}}
+@keyframes mapShimmer{0%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
+@media(prefers-reduced-motion:reduce){.field.setting-change,.field.setting-change:after,.field.setting-change select,.settings-toast.show,#mapBanner.realm-shift,.mapcard.selected .mapart span,.mapcard.selected:before{animation:none!important}}
+
+
+/* Configure Your Battle — enchanted control stations */
+.sectiontitle{margin-top:24px}
+.setup{position:relative;gap:14px;margin:16px 0 20px;perspective:900px}
+.field{--sigil:'✦';position:relative;isolation:isolate;min-width:0;gap:10px;padding:15px 13px 13px;border-radius:16px;overflow:hidden;background:linear-gradient(145deg,#192c50ed,#0a1429f5 70%);border:1px solid #8bdfff45;box-shadow:inset 0 1px #ffffff12,0 8px 20px #0003;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease,background .25s ease}
+.field:before{content:"";position:absolute;z-index:-1;width:130px;height:130px;right:-52px;top:-62px;border-radius:50%;background:radial-gradient(circle,#7be7ff20,transparent 68%);transition:transform .35s,opacity .35s;opacity:.7}
+.field:after{content:"";position:absolute;left:-70%;top:0;width:48%;height:100%;transform:skewX(-20deg);background:linear-gradient(90deg,transparent,#ffffff0c,transparent);pointer-events:none}
+.field:hover{transform:translateY(-4px) rotateX(2deg);border-color:#ffe09a99;box-shadow:inset 0 1px #ffffff1c,0 12px 28px #0005,0 0 18px #8ceaff16;background:linear-gradient(145deg,#223b63f5,#0b172d 75%)}
+.field:hover:before{transform:scale(1.5);opacity:1}
+.field:hover:after{animation:settingShine .85s ease}
+.field label{display:flex;align-items:center;gap:8px;color:#e3edff;font-size:.72rem;letter-spacing:.09em;font-weight:900;text-transform:uppercase;line-height:1.35}
+.field label:before{content:var(--sigil);display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border-radius:10px;color:#ffdf91;font-size:1.08rem;background:linear-gradient(145deg,#ffdc8d26,#8ceaff12);border:1px solid #ffd47d55;box-shadow:inset 0 0 12px #ffd47d0c,0 0 12px #ffd47d0b;animation:sigilFloat 3.8s ease-in-out infinite}
+.field:nth-child(1){--sigil:'⚔';--accent:#ffc96d}
+.field:nth-child(2){--sigil:'♟';--accent:#8ceaff}
+.field:nth-child(3){--sigil:'✧';--accent:#c7a6ff}
+.field:nth-child(4){--sigil:'☄';--accent:#ff9bb7}
+.field:nth-child(5){--sigil:'⌛';--accent:#8dffc5}
+.field:nth-child(1) label:before{color:#ffd47d;border-color:#ffd47d66}
+.field:nth-child(2) label:before{color:#8ceaff;border-color:#8ceaff66}
+.field:nth-child(3) label:before{color:#d1b5ff;border-color:#c5a0ff66}
+.field:nth-child(4) label:before{color:#ffadcb;border-color:#ff9bb766}
+.field:nth-child(5) label:before{color:#8dffc5;border-color:#8dffc566}
+.field select,.field input{width:100%;min-height:45px;appearance:none;-webkit-appearance:none;padding:10px 35px 10px 12px;border-radius:11px;border:1px solid color-mix(in srgb,var(--accent,#8ceaff) 48%,transparent);background:linear-gradient(135deg,#0d1c35f5,#111d38f5);color:#fff;font-weight:800;letter-spacing:.01em;box-shadow:inset 0 1px #ffffff0a,0 4px 12px #0002;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s,background .2s}
+.field{background-image:linear-gradient(135deg,color-mix(in srgb,var(--accent,#8ceaff) 8%,transparent),transparent 62%)}
+.field select{background-image:linear-gradient(45deg,transparent 50%,var(--accent,#8ceaff) 50%),linear-gradient(135deg,var(--accent,#8ceaff) 50%,transparent 50%),linear-gradient(135deg,#0d1c35f5,#111d38f5);background-position:calc(100% - 17px) 19px,calc(100% - 12px) 19px,0 0;background-size:5px 5px,5px 5px,100% 100%;background-repeat:no-repeat}
+.field select:hover,.field input:hover{border-color:var(--accent,#8ceaff);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent,#8ceaff) 13%,transparent),0 5px 16px #0003}
+.field select:focus,.field input:focus{outline:2px solid var(--accent,#8ceaff);outline-offset:2px;box-shadow:0 0 0 5px color-mix(in srgb,var(--accent,#8ceaff) 12%,transparent)}
+.field.setting-change{animation:stationActivate .55s ease}
+.field.setting-change:before{background:radial-gradient(circle,var(--accent,#8ceaff)3a,transparent 70%)}
+@keyframes settingShine{0%{left:-70%}100%{left:140%}}
+@keyframes sigilFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(4deg)}}
+@keyframes stationActivate{0%{transform:scale(1);box-shadow:0 8px 20px #0003}35%{transform:scale(1.025);border-color:var(--accent,#8ceaff);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent,#8ceaff) 20%,transparent),0 0 28px color-mix(in srgb,var(--accent,#8ceaff) 30%,transparent)}100%{transform:scale(1);box-shadow:0 8px 20px #0003}}
+@media(max-width:800px){.setup{gap:10px}.field{padding:12px 11px}.field label:before{flex-basis:27px;width:27px;height:27px}}
+@media(prefers-reduced-motion:reduce){.field,.field:before,.field:after,.field label:before{animation:none!important;transition:none!important}}
+
+
+/* Player count: tactile rune tiles, not a plain browser dropdown */
+.player-field{grid-column:span 2}
+.player-count-control{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:7px;position:relative;z-index:1}
+.player-pick{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;min-height:77px;padding:7px 2px 6px;border:1px solid #91a8d54a;border-radius:12px;background:linear-gradient(155deg,#182849 0%,#0b1429 78%);color:#b9c9e6;box-shadow:inset 0 1px #ffffff0d,0 4px 9px #0003;transition:transform .22s cubic-bezier(.2,.8,.2,1),border-color .22s,box-shadow .22s,background .22s,color .22s;}
+.player-pick:before{content:"";position:absolute;z-index:-1;inset:-40%;opacity:0;background:radial-gradient(circle at center,#9beaff55,transparent 58%);transition:opacity .22s,transform .35s;transform:scale(.6)}
+.player-pick:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(115deg,transparent 20%,#ffffff3b 48%,transparent 70%);transform:translateX(-120%)}
+.player-pick:hover{transform:translateY(-5px) scale(1.045);color:#fff4cf;border-color:#ffe09a;box-shadow:0 8px 20px #0005,0 0 20px #ffd47d2a,inset 0 0 15px #8ceaff13}
+.player-pick:hover:before{opacity:1;transform:scale(1.2)}.player-pick:hover:after{opacity:1;animation:pickShine .65s ease-out}
+.player-pick:active{transform:translateY(-1px) scale(.96)}
+.player-pick .pick-avatars{font-size:clamp(9px,1vw,13px);letter-spacing:-3px;white-space:nowrap;max-width:100%;overflow:hidden;color:#9bdff9;text-shadow:0 0 9px #8ceaff65;line-height:1.2;transition:transform .25s,color .25s,text-shadow .25s}
+.player-pick strong{font-size:1.35rem;line-height:1;color:#f4f6ff;text-shadow:0 2px 8px #0006;transition:transform .25s,color .25s}
+.player-pick small{font-size:.48rem;letter-spacing:.08em;font-weight:950;color:#8298bb;line-height:1.1}
+.player-pick.selected{border-color:#ffe09a;background:radial-gradient(ellipse at 50% 0%,#80652f99 0%,transparent 66%),linear-gradient(155deg,#26385b,#111a31 80%);color:#fff4cf;box-shadow:0 0 0 1px #ffe09a55,0 0 23px #ffd47d35,inset 0 0 18px #ffe4a00d,0 6px 15px #0004}
+.player-pick.selected:before{opacity:1;transform:scale(1.25);background:radial-gradient(circle at center,#ffd47d36,transparent 68%)}
+.player-pick.selected .pick-avatars{color:#ffe6a0;text-shadow:0 0 10px #ffd47d99;animation:avatarFloat 2.4s ease-in-out infinite}
+.player-pick.selected strong{color:#ffe6a0;transform:scale(1.12);text-shadow:0 0 18px #ffd47d77}
+.player-pick.selected small{color:#f2d99e}
+.player-pick.just-picked{animation:pickImpact .48s cubic-bezier(.15,.85,.2,1.25)}
+.player-pick.just-picked:after{opacity:1;animation:pickShine .55s ease-out}
+.count-value{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;opacity:0!important;pointer-events:none!important}
+.count-caption{font-size:.72rem;font-weight:850;text-align:center;letter-spacing:.04em;color:#d6c48e;min-height:17px;margin-top:1px;text-shadow:0 0 12px #ffd47d22}
+@keyframes pickShine{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
+@keyframes pickImpact{0%{transform:scale(.92)}38%{transform:scale(1.1);box-shadow:0 0 0 3px #ffe09a55,0 0 34px #ffd47d77}70%{transform:scale(.98)}100%{transform:scale(1)}}
+@keyframes avatarFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@media(max-width:1000px){.player-count-control{grid-template-columns:repeat(5,minmax(0,1fr))}.player-field{grid-column:span 2}}
+@media(max-width:600px){.player-field{grid-column:span 2}.player-count-control{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.player-pick{min-height:70px}}
+@media(prefers-reduced-motion:reduce){.player-pick,.player-pick:before,.player-pick .pick-avatars{animation:none!important;transition:none!important}}
+
+
+/* Click-to-open arcane setting stations: options emerge only on demand */
+.setting-hub{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:start}
+.setting-station{padding:0;overflow:visible;background:none;border:0;box-shadow:none;min-width:0;z-index:1}
+.setting-station:hover{transform:none;background:none;box-shadow:none;border-color:transparent}
+.setting-station:before,.setting-station:after{display:none}
+.setting-source{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;left:-9999px!important}
+.setting-trigger{width:100%;min-height:116px;display:flex;align-items:center;gap:10px;text-align:left;padding:15px 12px;border:1px solid color-mix(in srgb,var(--accent) 50%,#fff 0%);border-radius:17px;color:#f5f3ff;background:linear-gradient(145deg,#172443,#0a1227 78%);box-shadow:inset 0 1px #ffffff12,0 8px 20px #0004;position:relative;isolation:isolate;overflow:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s,background .25s}
+.setting-trigger:before{content:"";position:absolute;z-index:-1;inset:-50%;background:conic-gradient(from 30deg,transparent 0 25%,color-mix(in srgb,var(--accent) 16%,transparent) 35%,transparent 48% 100%);opacity:0;transition:opacity .3s;animation:stationOrbit 8s linear infinite}
+.setting-trigger:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,#ffffff12 45%,transparent 65%);transform:translateX(-130%);transition:transform .65s ease;pointer-events:none}
+.setting-trigger:hover,.setting-trigger[aria-expanded="true"]{transform:translateY(-4px) scale(1.015);border-color:var(--accent);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),0 0 24px color-mix(in srgb,var(--accent) 25%,transparent),0 12px 25px #0006}
+.setting-trigger:hover:before,.setting-trigger[aria-expanded="true"]:before{opacity:1}
+.setting-trigger:hover:after,.setting-trigger[aria-expanded="true"]:after{transform:translateX(130%)}
+.station-symbol{flex:0 0 38px;width:38px;height:38px;display:grid;place-items:center;border-radius:12px;color:var(--accent);font-size:1.45rem;background:color-mix(in srgb,var(--accent) 13%,#0b1429);border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);box-shadow:0 0 18px color-mix(in srgb,var(--accent) 15%,transparent)}
+.station-copy{min-width:0;display:flex;flex-direction:column;gap:4px}
+.station-copy small{font-size:.62rem;font-weight:950;letter-spacing:.11em;color:#aebedb}
+.station-copy strong{font-size:.96rem;line-height:1.2;overflow-wrap:anywhere}
+.station-copy em{font-style:normal;color:#8498ba;font-size:.7rem;line-height:1.3}
+.station-arrow{margin-left:auto;color:var(--accent);font-size:1rem;transition:transform .3s;align-self:flex-start}
+.setting-trigger[aria-expanded="true"] .station-arrow{transform:rotate(45deg) scale(1.15)}
+.setting-station.open{z-index:20}
+.setting-options{position:relative;z-index:2;margin-top:9px;padding:10px;border:1px solid color-mix(in srgb,var(--accent) 52%,transparent);border-radius:15px;background:linear-gradient(145deg,#152343f8,#080f21fc);box-shadow:0 15px 35px #0008,0 0 25px color-mix(in srgb,var(--accent) 13%,transparent);transform-origin:top center;animation:optionsBloom .34s cubic-bezier(.16,1,.3,1) both;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.setting-options[hidden]{display:none}
+.setting-option{min-width:0;position:relative;overflow:hidden;padding:10px 7px;border:1px solid #a7c8ed2b;border-radius:10px;background:linear-gradient(145deg,#182746,#0c162c);color:#d9e7ff;font-size:.77rem;font-weight:850;text-align:center;transition:transform .2s,border-color .2s,box-shadow .2s,color .2s}
+.setting-option:hover{transform:translateY(-2px) scale(1.025);border-color:var(--accent);color:#fff;box-shadow:0 0 17px color-mix(in srgb,var(--accent) 24%,transparent)}
+.setting-option.selected{border-color:var(--accent);color:#fff;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 23%,#152343),#0c162c);box-shadow:inset 0 0 16px color-mix(in srgb,var(--accent) 12%,transparent),0 0 14px color-mix(in srgb,var(--accent) 18%,transparent)}
+.setting-option.selected:after{content:"✦";position:absolute;top:3px;right:5px;color:var(--accent);font-size:.65rem}
+.setting-option.player-option{min-height:64px;font-size:1.15rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.setting-option.player-option small{font-size:.52rem;letter-spacing:.1em;color:#91a7c9}
+.setting-options.closing{animation:optionsFade .18s ease both}
+@keyframes optionsBloom{from{opacity:0;transform:translateY(-12px) scale(.92);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes optionsFade{to{opacity:0;transform:translateY(-7px) scale(.96)}}
+@keyframes stationOrbit{to{transform:rotate(360deg)}}
+.setting-station.picked .setting-trigger{animation:stationPick .55s ease}
+@keyframes stationPick{0%,100%{filter:brightness(1)}35%{filter:brightness(1.65);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent),0 0 34px color-mix(in srgb,var(--accent) 45%,transparent);transform:scale(1.035)}}
+@media(max-width:1000px){.setting-hub{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.setting-hub{grid-template-columns:repeat(2,minmax(0,1fr))}.setting-trigger{min-height:102px;padding:12px 10px}.station-symbol{flex-basis:32px;width:32px;height:32px}}
+@media(max-width:430px){.setting-hub{grid-template-columns:1fr}.setting-trigger{min-height:86px}}
+@media(prefers-reduced-motion:reduce){.setting-trigger,.setting-trigger:before,.setting-trigger:after,.setting-option,.setting-options,.setting-station.picked .setting-trigger{animation:none!important;transition:none!important}}
+
+
+/* Champion selection + visible weapon combat */
+.character-overlay{display:none;position:fixed;inset:0;z-index:30;overflow:auto;padding:20px;background:radial-gradient(ellipse at 50% 0%,#254c72eF,#030814f5 72%);backdrop-filter:blur(10px);place-items:center}
+.character-overlay.show{display:grid;animation:overlayIn .35s ease both}
+.character-modal{width:min(1100px,100%);padding:clamp(18px,3vw,30px);border:1px solid #9de8ff55;border-radius:24px;background:linear-gradient(145deg,#101e3af5,#080e20f8);box-shadow:0 25px 90px #000b,0 0 50px #48bfff18}
+.character-modal h2{text-align:center;font-size:clamp(1.8rem,4vw,2.7rem);margin:8px 0;background:linear-gradient(90deg,#fff1c5,#8ceaff);background-clip:text;color:transparent}
+.character-intro{text-align:center;color:#a9c7d9;max-width:650px;margin:0 auto 22px}
+.character-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-height:58vh;overflow:auto;padding:3px}
+.hero-pick-card{border:1px solid #ffffff20;border-radius:16px;padding:13px;background:linear-gradient(145deg,#162846,#091327);animation:heroReveal .35s both}
+.hero-pick-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.hero-portrait{width:70px;height:78px;flex:0 0 70px;display:grid;place-items:center;position:relative;border-radius:14px;background:radial-gradient(circle at 50% 35%,var(--heroGlow),#0a1429 72%);border:1px solid color-mix(in srgb,var(--heroGlow) 65%,transparent);font-size:2.8rem;filter:drop-shadow(0 0 12px var(--heroGlow))}
+.hero-portrait:after{content:"";position:absolute;inset:5px;border:1px solid #ffffff19;border-radius:10px}
+.hero-pick-head strong{display:block;font-size:1.05rem}.hero-pick-head small{color:#a9c7d9}
+.hero-class-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.hero-class{padding:9px 5px;background:#0b162b;border:1px solid #a6c6e42b;color:#dbeaff;border-radius:10px;font-size:.78rem;display:flex;flex-direction:column;align-items:center;gap:3px}
+.hero-class span{font-size:1.35rem}.hero-class small{font-size:.64rem;color:#91a7c9}
+.hero-class.selected{border-color:var(--heroGlow);background:linear-gradient(145deg,color-mix(in srgb,var(--heroGlow) 23%,#101b32),#0b162b);box-shadow:0 0 18px color-mix(in srgb,var(--heroGlow) 25%,transparent);color:#fff}
+.character-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;flex-wrap:wrap;color:#b5cde2;font-size:.85rem}
+#enterArena{box-shadow:0 0 24px #65d4ff28}
+.fighter-line{display:flex;align-items:center;gap:12px;margin:8px 0 10px;padding:9px;border:1px solid #ffffff14;border-radius:12px;background:linear-gradient(90deg,#0b1629,#152b44)}
+.fighter-avatar{width:72px;height:78px;flex:0 0 72px;position:relative;display:grid;place-items:center;font-size:3.1rem;border-radius:12px;background:radial-gradient(circle at 50% 35%,var(--fighter-glow,#8ceaff)55,#10192b 100%);box-shadow:inset 0 0 18px #ffffff12;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--fighter-glow,#8ceaff) 35%,transparent))}
+.fighter-avatar .weapon{position:absolute;right:-6px;bottom:4px;font-size:1.55rem;transform:rotate(-25deg);filter:drop-shadow(0 0 5px #ffd47d)}
+.fighter-info{min-width:0;flex:1}.fighter-class{font-size:.73rem;color:var(--fighter-glow,#8ceaff);font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.fighter-tagline{font-size:.72rem;color:#a9c7d9}
+.player.attacking{z-index:4;animation:attackerLunge .72s cubic-bezier(.2,.8,.2,1)}
+.player.attacking .fighter-avatar{animation:weaponSwing .72s ease-in-out}
+.player.hit{animation:targetImpact .62s ease}
+.player.hit .fighter-avatar{animation:heroRecoil .62s ease}
+.combat-slash{position:absolute;inset:15% 8%;pointer-events:none;z-index:6;display:grid;place-items:center;font-size:3.6rem;color:#fff1a8;text-shadow:0 0 10px #fff,0 0 28px #64dcff;animation:slashBurst .58s ease-out forwards}
+.combat-hit-number{position:absolute;right:12px;top:18%;z-index:7;color:#ffe69a;font-weight:1000;font-size:1.7rem;text-shadow:0 2px 5px #000,0 0 16px #ff9e43;pointer-events:none;animation:damageFloat .9s ease-out forwards}
+@keyframes heroReveal{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes attackerLunge{0%,100%{transform:translateX(0) scale(1)}30%{transform:translateX(18px) scale(1.025)}60%{transform:translateX(5px) scale(1.01)}}
+@keyframes weaponSwing{0%,100%{transform:rotate(0)}30%{transform:rotate(-18deg) translateY(-4px)}52%{transform:rotate(36deg) translate(8px,-4px)}}
+@keyframes targetImpact{0%,100%{transform:translateX(0)}20%{transform:translateX(9px) rotate(1deg);filter:brightness(1.7)}45%{transform:translateX(-7px) rotate(-1deg);filter:brightness(.7)}70%{transform:translateX(4px)}}
+@keyframes heroRecoil{0%,100%{transform:translateX(0) rotate(0)}35%{transform:translateX(8px) rotate(12deg)}65%{transform:translateX(-4px) rotate(-7deg)}}
+@keyframes slashBurst{0%{opacity:0;transform:scale(.2) rotate(-40deg)}35%{opacity:1;transform:scale(1.25) rotate(8deg)}100%{opacity:0;transform:scale(1.7) rotate(28deg)}}
+@keyframes damageFloat{0%{opacity:0;transform:translateY(15px) scale(.5)}25%{opacity:1;transform:translateY(-5px) scale(1.15)}100%{opacity:0;transform:translateY(-45px) scale(1)}}
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+@media(max-width:700px){.character-choices{grid-template-columns:1fr;max-height:none}.character-overlay{align-items:start}.hero-class-options{grid-template-columns:repeat(3,minmax(0,1fr))}.fighter-avatar{width:60px;height:66px;flex-basis:60px}}
+@media(prefers-reduced-motion:reduce){.hero-pick-card,.character-overlay.show,.player.attacking,.player.hit,.fighter-avatar,.combat-slash,.combat-hit-number{animation:none!important}}
+
+
+/* Difficulty-powered weapon aura: the harder the trivia, the stronger the strike */
+.fighter-avatar .weapon{z-index:2;transform-origin:60% 65%;transition:filter .25s, text-shadow .25s}
+.player.weapon-aura-easy .fighter-avatar .weapon{animation:weaponGlowEasy .9s ease-in-out infinite alternate}
+.player.weapon-aura-medium .fighter-avatar .weapon{animation:weaponGlowMedium .72s ease-in-out infinite alternate}
+.player.weapon-aura-hard .fighter-avatar .weapon{animation:weaponGlowHard .48s ease-in-out infinite alternate}
+.player.weapon-aura-easy .fighter-avatar:after,.player.weapon-aura-medium .fighter-avatar:after,.player.weapon-aura-hard .fighter-avatar:after{content:"";position:absolute;inset:-5px;border-radius:15px;pointer-events:none;animation:auraRing .7s ease-out infinite}
+.player.weapon-aura-easy .fighter-avatar:after{border:1px solid #8ceaff88;box-shadow:0 0 10px #8ceaff66}
+.player.weapon-aura-medium .fighter-avatar:after{border:2px solid #c7a6ffb0;box-shadow:0 0 18px #b18cffaa, inset 0 0 14px #a17aff55}
+.player.weapon-aura-hard .fighter-avatar:after{border:2px solid #ffd47d;box-shadow:0 0 22px #ffb347,0 0 42px #ff6b35aa,inset 0 0 22px #ffcc5c77}
+.player.weapon-aura-hard .fighter-avatar{filter:drop-shadow(0 0 10px #ffb347) drop-shadow(0 0 20px #ff4d24)}
+.player.weapon-aura-medium .fighter-avatar{filter:drop-shadow(0 0 8px #b18cff)}
+@keyframes weaponGlowEasy{from{filter:drop-shadow(0 0 3px #8ceaff);text-shadow:0 0 5px #8ceaff}to{filter:drop-shadow(0 0 12px #8ceaff);text-shadow:0 0 14px #8ceaff,0 0 24px #fff}}
+@keyframes weaponGlowMedium{from{filter:drop-shadow(0 0 5px #a887ff);text-shadow:0 0 8px #b18cff}to{filter:drop-shadow(0 0 16px #d5bfff);text-shadow:0 0 16px #b18cff,0 0 30px #8e64ff}}
+@keyframes weaponGlowHard{from{filter:drop-shadow(0 0 8px #ff8c36);text-shadow:0 0 10px #ffbd4a}to{filter:drop-shadow(0 0 24px #ff4b22);text-shadow:0 0 20px #fff0a6,0 0 38px #ff6a20,0 0 52px #ff2d1d}}
+@keyframes auraRing{0%{transform:scale(.88);opacity:.25}55%{opacity:1}100%{transform:scale(1.18);opacity:0}}
+.combat-slash.aura-easy{color:#b8f4ff;text-shadow:0 0 12px #fff,0 0 32px #4ddfff}
+.combat-slash.aura-medium{color:#e2caff;text-shadow:0 0 12px #fff,0 0 32px #a77aff}
+.combat-slash.aura-hard{color:#fff0a6;text-shadow:0 0 14px #fff,0 0 35px #ff8a26,0 0 55px #ff321e}
+.combat-slash.aura-hard{animation:slashBurstHard .68s ease-out forwards}
+@keyframes slashBurstHard{0%{opacity:0;transform:scale(.15) rotate(-50deg);filter:brightness(1)}25%{opacity:1;transform:scale(1.4) rotate(12deg);filter:brightness(2)}100%{opacity:0;transform:scale(2) rotate(35deg);filter:brightness(1.4)}}
+
+
+/* Cinematic hit scene: show the actual two selected fighters and a moving attack */
+.cutscene.hit{background:radial-gradient(ellipse at 50% 55%,#3d254c 0,#11152e 48%,#02040bf7 100%)}
+.cutscene.hit:before,.cutscene.hit:after{display:none}
+.battle-stage{display:none;position:absolute;inset:0;overflow:hidden;align-items:center;justify-content:space-between;padding:clamp(20px,8vw,120px);z-index:1}
+.cutscene.hit .battle-stage{display:flex}
+.battle-stage:before{content:"";position:absolute;left:0;right:0;bottom:0;height:27%;background:linear-gradient(transparent,#08101f 72%);border-top:1px solid #ffffff20}
+.battle-actor{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;width:30%;font-size:clamp(4rem,10vw,8rem);filter:drop-shadow(0 12px 18px #0009)}
+.battle-actor .actor-emoji{display:block;transform-origin:center bottom}
+.battle-actor .actor-label{font-size:clamp(.75rem,2vw,1rem);font-weight:950;letter-spacing:.12em;text-transform:uppercase;color:#f4e7bd;background:#071326d9;border:1px solid #ffffff2b;border-radius:99px;padding:7px 12px;white-space:nowrap}
+.battle-actor.attacker .actor-emoji{animation:heroLunge 1.2s cubic-bezier(.2,.8,.2,1) both}
+.battle-actor.defender .actor-emoji{animation:heroRecoil 1.1s .85s ease-out both}
+.battle-projectile{position:absolute;z-index:4;left:27%;top:43%;font-size:clamp(2.5rem,6vw,5rem);opacity:0;filter:drop-shadow(0 0 18px #ff7b25);pointer-events:none}
+.cutscene.hit .battle-projectile{animation:fireballFlight 1.15s .25s cubic-bezier(.35,.05,.55,.95) both}
+.battle-impact{position:absolute;z-index:5;left:74%;top:42%;font-size:clamp(4rem,10vw,8rem);opacity:0;filter:drop-shadow(0 0 30px #ffcb66);pointer-events:none}
+.cutscene.hit .battle-impact{animation:impactBurst .8s 1.05s ease-out both}
+.cutscene.hit .cutscene-content{align-self:end;margin-bottom:clamp(14px,4vh,50px);width:min(620px,90vw);padding:16px 20px;background:#080f22e8}
+.cutscene.hit .cutscene-icon{display:none}
+.cutscene.hit .cutscene-kicker{margin-top:0}
+.cutscene.hit .cutscene-content h2{font-size:clamp(1.7rem,4vw,2.7rem)}
+.cutscene.hit .cutscene-rays{opacity:.45}
+.cutscene.hit[data-attack="fire"] .battle-projectile{filter:drop-shadow(0 0 22px #ff6b21)}
+.cutscene.hit[data-attack="ice"] .battle-projectile{filter:drop-shadow(0 0 22px #7beaff)}
+.cutscene.hit[data-attack="arcane"] .battle-projectile{filter:drop-shadow(0 0 22px #bf83ff)}
+.cutscene.hit[data-attack="arrow"] .battle-projectile{filter:drop-shadow(0 0 22px #91ffbb)}
+.cutscene.hit[data-attack="shadow"] .battle-projectile{filter:drop-shadow(0 0 22px #b17cff)}
+@keyframes heroLunge{0%{transform:translateX(0) scale(1)}24%{transform:translateX(22px) scale(1.08)}55%{transform:translateX(48px) scale(1.15) rotate(-5deg)}100%{transform:translateX(0) scale(1)}}
+@keyframes heroRecoil{0%{transform:translateX(0) rotate(0)}25%{transform:translateX(20px) rotate(9deg) scale(.92)}60%{transform:translateX(-15px) rotate(-7deg) scale(.94)}100%{transform:translateX(0) rotate(0) scale(1)}}
+@keyframes fireballFlight{0%{opacity:0;transform:translate(0,0) scale(.4) rotate(0)}12%{opacity:1;transform:translate(25px,-20px) scale(1)}78%{opacity:1;transform:translate(45vw,20px) scale(1.35) rotate(180deg)}100%{opacity:0;transform:translate(50vw,20px) scale(.2) rotate(260deg)}}
+@keyframes impactBurst{0%{opacity:0;transform:scale(.15) rotate(-20deg)}25%{opacity:1;transform:scale(1.25) rotate(10deg)}65%{opacity:.95;transform:scale(1) rotate(0)}100%{opacity:0;transform:scale(1.7) rotate(15deg)}}
+@media(max-width:560px){.battle-stage{padding:20px 8px 170px}.battle-actor{width:35%;font-size:clamp(3.5rem,17vw,6rem)}.battle-actor .actor-label{font-size:.65rem;padding:5px 7px}.battle-projectile{left:27%;top:40%}.battle-impact{left:72%;top:40%}.cutscene.hit .cutscene-content{margin-bottom:8px}}
+
+
+/* Cinematic arena v2: layered stage, weapon choreography, trails and impact debris */
+.cutscene.hit {
+  background:
+    radial-gradient(ellipse at 50% 65%, #563c69 0%, #211d3d 34%, #090e20 70%, #02040b 100%);
+}
+.cutscene.hit:after { display:none; }
+.cutscene.hit .cutscene-rays {
+  opacity:.8;
+  background:repeating-conic-gradient(from 0deg at 50% 53%,#fff1bd12 0deg 2deg,transparent 2deg 12deg);
+  animation:arenaRays 18s linear infinite;
+}
+.arena-moon {
+  position:absolute;left:50%;top:12%;width:clamp(100px,19vw,230px);aspect-ratio:1;
+  transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(circle at 42% 35%,#fff5d9,#9fc8ff 25%,#7163a6 48%,#1b2146 70%,transparent 72%);
+  opacity:.48;filter:blur(.3px) drop-shadow(0 0 45px #9bbdff66);
+}
+.arena-moon:after {
+  content:"";position:absolute;inset:12%;border:1px solid #fff8d466;border-radius:50%;
+  box-shadow:0 0 0 12px #c8d8ff0a,0 0 0 26px #c8d8ff08;
+}
+.arena-ground {
+  position:absolute;left:-15%;right:-15%;bottom:-28%;height:65%;border-radius:50% 50% 0 0;
+  background:radial-gradient(ellipse at 50% 12%,#39435e 0,#151d34 43%,#060a16 72%);
+  border-top:2px solid #d8caff44;box-shadow:0 -18px 55px #a7b9ff18,inset 0 18px 40px #ffffff09;
+}
+.arena-ground:before,.arena-ground:after {
+  content:"";position:absolute;left:50%;top:4%;width:min(60vw,620px);aspect-ratio:1;
+  border:2px solid #a8bfff26;border-radius:50%;transform:translateX(-50%) rotateX(68deg);
+  box-shadow:0 0 0 24px #b4bfff08,0 0 0 50px #b4bfff06;
+}
+.arena-ground:after {width:min(38vw,390px);border-color:#ffe4a044;box-shadow:0 0 30px #a4baff18}
+.arena-rune {position:absolute;z-index:1;top:39%;font-size:clamp(2rem,5vw,4rem);color:#ffe8ad55;text-shadow:0 0 22px #c2aaff66;animation:runePulse 2.2s ease-in-out infinite}
+.rune-left{left:32%}.rune-right{right:31%;animation-delay:.6s}
+.battle-actor {width:32%;min-height:280px;justify-content:flex-end;padding-bottom:clamp(50px,11vh,120px)}
+.battle-actor:before {
+  content:"";position:absolute;z-index:-1;bottom:clamp(80px,15vh,145px);width:78%;aspect-ratio:1;
+  border-radius:50%;background:radial-gradient(circle,#fff7d833 0, var(--actor-glow,#b8a6ff) 0%,transparent 68%);
+  opacity:.6;filter:blur(10px);animation:actorAura 1.8s ease-in-out infinite alternate;
+}
+.battle-actor.attacker{--actor-glow:#ff9c53}
+.battle-actor.defender{--actor-glow:#8ccfff}
+.battle-actor .actor-emoji {
+  position:relative;z-index:2;font-size:clamp(5rem,13vw,10rem);
+  filter:drop-shadow(0 10px 0 #05081288) drop-shadow(0 0 12px #fff4d955);
+  -webkit-text-stroke:1px #ffffff16;
+}
+.battle-actor.attacker .actor-emoji{animation:heroLungeV2 1.35s cubic-bezier(.2,.8,.2,1) both}
+.battle-actor.defender .actor-emoji{animation:heroRecoilV2 1.05s 1s ease-out both}
+.actor-weapon {
+  position:absolute;z-index:3;right:14%;bottom:clamp(105px,19vh,185px);
+  font-size:clamp(2rem,5vw,4rem);transform-origin:35% 75%;
+  filter:drop-shadow(0 0 9px #ffe5a0);opacity:.98;
+}
+.battle-actor.attacker .actor-weapon{animation:weaponChoreo 1.25s .08s ease-in-out both}
+.battle-actor.defender .actor-label{animation:labelHit 1s 1s ease-out both}
+.battle-projectile {
+  left:28%;top:43%;z-index:5;font-size:clamp(3rem,7vw,6rem);
+  text-shadow:0 0 22px currentColor;
+}
+.cutscene.hit .battle-projectile{animation:projectileV2 1.25s .24s cubic-bezier(.25,.75,.2,1) both}
+.battle-projectile:before {
+  content:"";position:absolute;z-index:-1;left:-1.7em;top:50%;width:2.3em;height:.28em;
+  transform:translateY(-50%) rotate(-9deg);border-radius:99px;
+  background:linear-gradient(90deg,transparent,#ffb75e88,#fff5cf);
+  filter:blur(4px);box-shadow:0 0 14px #ffb75e;
+}
+.cutscene.hit[data-attack="ice"] .battle-projectile:before{background:linear-gradient(90deg,transparent,#68eaff,#fff);box-shadow:0 0 17px #68eaff}
+.cutscene.hit[data-attack="arcane"] .battle-projectile:before,.cutscene.hit[data-attack="shadow"] .battle-projectile:before{background:linear-gradient(90deg,transparent,#bd82ff,#fff);box-shadow:0 0 17px #bd82ff}
+.cutscene.hit[data-attack="arrow"] .battle-projectile:before{display:none}
+.projectile-trail {
+  position:absolute;z-index:3;left:24%;top:46%;width:0;height:3px;opacity:0;
+  background:linear-gradient(90deg,transparent,#fff8d8,#ff9a42,transparent);
+  box-shadow:0 0 18px #ff8c42;transform:rotate(4deg);transform-origin:left center;
+}
+.cutscene.hit .projectile-trail{animation:trailV2 1.18s .25s ease-out both}
+.battle-impact{left:75%;top:40%;z-index:6;font-size:clamp(5rem,12vw,9rem)}
+.cutscene.hit .battle-impact{animation:impactV2 .9s 1.12s cubic-bezier(.15,.8,.2,1) both}
+.impact-shards{position:absolute;z-index:5;left:72%;top:38%;font-size:clamp(1.6rem,4vw,3rem);letter-spacing:.4em;color:#fff3bb;text-shadow:0 0 18px #ff9d4a;opacity:0}
+.cutscene.hit .impact-shards{animation:shardsV2 .85s 1.14s ease-out both}
+.cutscene.hit .cutscene-content{z-index:8;border-color:#ffe2a077;box-shadow:0 0 0 1px #ffe2a022,0 0 70px #7aaaff33}
+.cutscene.hit[data-attack="fire"] .battle-impact{filter:drop-shadow(0 0 35px #ff6428)}
+.cutscene.hit[data-attack="ice"] .battle-impact{filter:drop-shadow(0 0 35px #62eaff)}
+.cutscene.hit[data-attack="arcane"] .battle-impact{filter:drop-shadow(0 0 35px #b983ff)}
+.cutscene.hit[data-attack="shadow"] .battle-impact{filter:drop-shadow(0 0 35px #a16aff)}
+@keyframes arenaRays{to{transform:rotate(360deg)}}
+@keyframes runePulse{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:.8;transform:scale(1.15)}}
+@keyframes actorAura{from{transform:scale(.86);opacity:.3}to{transform:scale(1.12);opacity:.72}}
+@keyframes heroLungeV2{0%{transform:translate(0,0) scale(.88) rotate(0)}18%{transform:translate(8px,-14px) scale(1.04) rotate(-5deg)}45%{transform:translate(48px,-4px) scale(1.16) rotate(7deg)}65%{transform:translate(28px,4px) scale(1.1) rotate(-3deg)}100%{transform:translate(0,0) scale(1) rotate(0)}}
+@keyframes heroRecoilV2{0%,100%{transform:translateX(0) rotate(0) scale(1)}25%{transform:translate(28px,-8px) rotate(13deg) scale(.86)}55%{transform:translate(-18px,2px) rotate(-10deg) scale(.9)}75%{transform:translate(8px,0) rotate(5deg) scale(.96)}}
+@keyframes weaponChoreo{0%,100%{transform:rotate(-30deg) translate(0,0) scale(.95)}20%{transform:rotate(-65deg) translate(-8px,-8px) scale(1.1)}48%{transform:rotate(28deg) translate(10px,2px) scale(1.15)}68%{transform:rotate(-8deg) translate(0,0) scale(1.04)}}
+@keyframes projectileV2{0%{opacity:0;transform:translate(0,10px) scale(.2) rotate(-35deg)}12%{opacity:1;transform:translate(2vw,-8px) scale(.8) rotate(0)}65%{opacity:1;transform:translate(39vw,4px) scale(1.35) rotate(160deg)}84%{opacity:1;transform:translate(48vw,12px) scale(1.7) rotate(230deg)}100%{opacity:0;transform:translate(50vw,15px) scale(.3) rotate(300deg)}}
+@keyframes trailV2{0%{opacity:0;width:0}20%{opacity:.9;width:12vw}70%{opacity:.85;width:43vw}100%{opacity:0;width:49vw}}
+@keyframes impactV2{0%{opacity:0;transform:scale(.05) rotate(-35deg)}25%{opacity:1;transform:scale(1.4) rotate(12deg)}55%{opacity:1;transform:scale(.95) rotate(-5deg)}100%{opacity:0;transform:scale(1.9) rotate(20deg)}}
+@keyframes shardsV2{0%{opacity:0;transform:translate(-10px,10px) scale(.2)}35%{opacity:1;transform:translate(15px,-20px) scale(1.3)}100%{opacity:0;transform:translate(45px,-55px) scale(.5)}}
+@keyframes labelHit{0%,100%{transform:translateX(0)}30%{transform:translateX(9px)}}
+@media(max-width:560px){
+ .battle-stage{padding:10px 4px 160px}
+ .battle-actor{width:39%;min-height:200px;padding-bottom:90px}
+ .battle-actor .actor-emoji{font-size:clamp(4.5rem,20vw,7rem)}
+ .actor-weapon{right:8%;bottom:115px;font-size:2.4rem}
+ .arena-moon{top:10%}.arena-rune{top:32%}
+ .battle-projectile{left:25%;top:38%}.projectile-trail{top:42%;left:23%}
+ .battle-impact{left:71%;top:36%}.impact-shards{left:68%;top:34%}
+}
+@media(prefers-reduced-motion:reduce){
+ .cutscene.hit .battle-projectile,.cutscene.hit .projectile-trail,.cutscene.hit .battle-impact,.cutscene.hit .impact-shards,
+ .battle-actor.attacker .actor-emoji,.battle-actor.defender .actor-emoji,.battle-actor.attacker .actor-weapon,.arena-ground:before,.arena-ground:after{animation:none!important}
+}
+
+
+/* Realm transformation: the three mountain sigils now change shape, atmosphere and motion. */
+.mountain{isolation:isolate;overflow:hidden;transition:background .45s,filter .45s,box-shadow .45s}
+.mountain .peak{z-index:1;transition:transform .5s,border-bottom-color .5s,filter .5s}
+.theme-fx{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none}
+.theme-fx span{position:absolute;opacity:0;font-size:clamp(14px,2.4vw,27px);color:#fff;text-shadow:0 0 14px currentColor}
+.fx-one{left:14%;top:16%}.fx-two{left:41%;top:8%}.fx-three{right:17%;top:22%}.fx-four{right:39%;top:46%}.fx-five{left:62%;top:60%}
+.mountain:after{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;opacity:0;transition:opacity .4s}
+.mountain.realm-burst{animation:realmPop .85s ease-out}
+@keyframes realmPop{0%,100%{filter:brightness(1)}30%{filter:brightness(1.5) saturate(1.5);box-shadow:inset 0 0 60px #fff7,0 0 32px #ffe3a088}}
+.mountain.theme-frozen .peak{filter:drop-shadow(0 0 13px #b9f4ffb0)}
+.mountain.theme-frozen .peak:after{border-bottom-color:#9deaff}
+.mountain.theme-frozen .theme-fx span{color:#e6fbff;animation:iceFloat 2.8s ease-in-out infinite}
+.mountain.theme-frozen .fx-one,.mountain.theme-frozen .fx-three{opacity:.9}.mountain.theme-frozen .fx-two{opacity:.7;animation-delay:.5s}.mountain.theme-frozen .fx-four{opacity:.5;animation-delay:1.1s}
+.mountain.theme-frozen:after{opacity:1;background:linear-gradient(115deg,transparent 28%,#e4fbff2a 48%,transparent 60%);animation:bannerGleam 3.8s ease-in-out infinite}
+.mountain.theme-halloween .peak{filter:drop-shadow(0 0 13px #f58a4f99)}
+.mountain.theme-halloween .peak.p1{transform:scale(.82) skewX(-9deg);transform-origin:bottom}.mountain.theme-halloween .peak.p2{transform:scaleY(1.15) skewX(5deg);transform-origin:bottom}.mountain.theme-halloween .peak.p3{transform:scale(.9) skewX(-6deg);transform-origin:bottom}
+.mountain.theme-halloween .peak:after{border-bottom-color:#a34a78}.mountain.theme-halloween .sun{border-radius:43%;background:#ffad67!important;box-shadow:0 0 28px #ff783b,0 0 65px #c7359d!important}
+.mountain.theme-halloween .theme-fx span{color:#ffb56d;animation:spookyFloat 3.2s ease-in-out infinite}.mountain.theme-halloween .fx-one{opacity:.95}.mountain.theme-halloween .fx-two{opacity:.85;animation-delay:.5s}.mountain.theme-halloween .fx-three{opacity:.75;animation-delay:1.2s}.mountain.theme-halloween .fx-five{opacity:.7;animation-delay:1.8s}
+.mountain.theme-halloween:after{opacity:1;background:radial-gradient(ellipse at 50% 100%,#ff6c323d,transparent 62%),linear-gradient(0deg,#2b0a3825,transparent)}
+.mountain.theme-christmas .peak{filter:drop-shadow(0 0 13px #e4fcff)}.mountain.theme-christmas .peak:after{border-bottom-color:#d9f8ff}.mountain.theme-christmas .sun{box-shadow:0 0 35px #fff8d9,0 0 70px #d9f9ff!important}
+.mountain.theme-christmas .theme-fx span{color:white;animation:snowfall 3.5s linear infinite}.mountain.theme-christmas .fx-one,.mountain.theme-christmas .fx-three,.mountain.theme-christmas .fx-five{opacity:.9}.mountain.theme-christmas .fx-two{opacity:.7;animation-delay:1s}.mountain.theme-christmas .fx-four{opacity:.6;animation-delay:2s}
+.mountain.theme-christmas:after{opacity:1;background:linear-gradient(180deg,#e8ffff25,transparent 58%)}
+.mountain.theme-forest .peak{filter:drop-shadow(0 0 14px #72dc8b88)}.mountain.theme-forest .peak:after{border-bottom-color:#8cd78a}
+.mountain.theme-forest .peak.p1{transform:scale(.77) skewX(-7deg);transform-origin:bottom}.mountain.theme-forest .peak.p2{transform:scaleY(1.08);transform-origin:bottom}.mountain.theme-forest .peak.p3{transform:scale(.91) skewX(7deg);transform-origin:bottom}
+.mountain.theme-forest .theme-fx span{color:#d2ff9e;animation:firefly 3.3s ease-in-out infinite}.mountain.theme-forest .fx-one,.mountain.theme-forest .fx-three,.mountain.theme-forest .fx-five{opacity:.95}.mountain.theme-forest .fx-two{opacity:.7;animation-delay:.9s}.mountain.theme-forest .fx-four{opacity:.7;animation-delay:1.5s}
+.mountain.theme-forest:after{opacity:1;background:radial-gradient(ellipse at 45% 85%,#a6ff6d30,transparent 58%)}
+@keyframes iceFloat{0%,100%{transform:translateY(2px) rotate(-8deg);opacity:.3}50%{transform:translateY(-12px) rotate(14deg);opacity:1}}
+@keyframes bannerGleam{0%,100%{transform:translateX(-25%);opacity:.2}50%{transform:translateX(25%);opacity:1}}
+@keyframes spookyFloat{0%,100%{transform:translateY(5px) rotate(-8deg);opacity:.4}50%{transform:translateY(-13px) rotate(10deg);opacity:1}}
+@keyframes snowfall{0%{transform:translateY(-22px) rotate(0);opacity:0}20%{opacity:.9}100%{transform:translateY(80px) rotate(100deg);opacity:0}}
+@keyframes firefly{0%,100%{transform:translate(0,0) scale(.65);opacity:.25}50%{transform:translate(10px,-12px) scale(1.25);opacity:1}}
+/* Illustrated hero portraits replace the emoji in the cinematic stage. */
+.battle-actor .actor-emoji{display:block;width:clamp(125px,19vw,220px);height:clamp(190px,28vw,300px);font-size:0!important;overflow:hidden;position:relative;border-radius:16px 16px 5px 5px;background:#091326;border:1px solid #ffe4a066;box-shadow:0 0 0 3px #ffe4a018,0 0 32px var(--actor-glow,#c7a6ff55);filter:drop-shadow(0 15px 18px #000b)}
+.battle-actor .actor-emoji img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 24%;filter:saturate(1.08) contrast(1.03)}
+.battle-actor .actor-emoji:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 55%,#07102066 100%),linear-gradient(110deg,#fff2,transparent 25%,transparent 75%,#fff1);box-shadow:inset 0 0 0 1px #ffffff1b}
+.battle-actor{width:36%;min-height:320px}.battle-actor.attacker .actor-emoji{animation:heroLungeV2 1.35s cubic-bezier(.2,.8,.2,1) both}.battle-actor.defender .actor-emoji{animation:heroRecoilV2 1.05s 1s ease-out both}
+.battle-actor.attacker .actor-emoji img{animation:portraitPower 1.25s ease-in-out both}.battle-actor.defender .actor-emoji img{animation:portraitHitV2 1.05s 1s ease-out both}
+.battle-actor.attacker .actor-weapon{right:2%;bottom:clamp(115px,21vh,195px);z-index:4}.battle-actor .actor-label{position:relative;z-index:8;margin-top:8px}
+@keyframes portraitPower{0%,100%{filter:saturate(1.05) brightness(1)}45%{filter:saturate(1.45) brightness(1.24) drop-shadow(0 0 18px #ffad55)}}
+@keyframes portraitHitV2{0%,100%{filter:brightness(1)}30%{filter:brightness(1.8) saturate(1.5) drop-shadow(0 0 24px #fff2a5)}55%{filter:brightness(.84)}}
+@media(max-width:560px){.battle-actor .actor-emoji{width:clamp(92px,27vw,145px);height:clamp(145px,40vw,205px)}.battle-actor{width:40%;min-height:220px}}
+@media(prefers-reduced-motion:reduce){.theme-fx span,.mountain:after,.mountain.realm-burst{animation:none!important}.battle-actor .actor-emoji,.battle-actor .actor-emoji img{animation:none!important}}
+
+
+/* Realm-specific atmosphere on the live question panel */
+.question{position:relative;isolation:isolate;overflow:hidden;transition:background .4s,border-color .4s,box-shadow .4s}
+.question>*:not(.question-decor){position:relative;z-index:2}
+.question-decor{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.question-decor .decor{position:absolute;display:block;opacity:0;filter:drop-shadow(0 4px 8px #0009)}
+.decor-a{left:2%;top:12%;font-size:clamp(1.5rem,3vw,2.8rem)}.decor-b{right:3%;top:18%;font-size:clamp(1.5rem,3vw,2.6rem)}
+.decor-c{left:5%;bottom:9%;font-size:clamp(1.5rem,3vw,2.4rem)}.decor-d{left:2%;top:45%;font-size:clamp(1.3rem,2.5vw,2rem)}
+.decor-e{right:2%;top:45%;font-size:clamp(1.5rem,3vw,2.6rem)}.decor-f{right:7%;bottom:7%;font-size:clamp(1.5rem,3vw,2.5rem)}
+.decor-g{left:3%;top:68%;font-size:clamp(1.5rem,3vw,2.4rem)}.decor-h{right:5%;top:8%;font-size:clamp(1.2rem,2.5vw,2rem)}
+.question:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.7}
+body.theme-halloween .question{border-color:#ff8a3d99;background:linear-gradient(135deg,#21142d,#171528 55%,#2b171e);box-shadow:inset 0 0 38px #f36b2620,0 0 22px #e65b3030}
+body.theme-halloween .question:after{opacity:1;background:radial-gradient(ellipse at 0% 100%,#ff762622,transparent 42%),radial-gradient(ellipse at 100% 0%,#963b9a2b,transparent 42%)}
+body.theme-halloween .decor-a,body.theme-halloween .decor-b,body.theme-halloween .decor-c,body.theme-halloween .decor-h{opacity:.94;animation:hauntFloat 4s ease-in-out infinite}
+body.theme-halloween .decor-d{opacity:.5;animation:hauntFloat 4.8s .5s ease-in-out infinite}
+body.theme-christmas .question{border-color:#b5efff99;background:linear-gradient(135deg,#102c3b,#15364a 55%,#102a34);box-shadow:inset 0 0 42px #8feaff18,0 0 22px #b9efff20}
+body.theme-christmas .question:after{opacity:1;background:radial-gradient(ellipse at 50% 0%,#e7ffff20,transparent 55%),linear-gradient(180deg,transparent 55%,#d6f7ff12)}
+body.theme-christmas .decor-d,body.theme-christmas .decor-e,body.theme-christmas .decor-f,body.theme-christmas .decor-h{opacity:.95;animation:sweetSnow 4.5s ease-in-out infinite}
+body.theme-christmas .decor-e{animation-delay:.6s}body.theme-christmas .decor-f{animation-delay:1.3s}body.theme-christmas .decor-d{animation-delay:1.8s}
+body.theme-frozen .question{border-color:#9ceaff88;background:linear-gradient(135deg,#102739,#122c43 55%,#111d36);box-shadow:inset 0 0 40px #74dfff18,0 0 22px #7acfff20}
+body.theme-frozen .question:after{opacity:1;background:linear-gradient(120deg,transparent 25%,#c8f7ff13 46%,transparent 60%)}
+body.theme-frozen .decor-f,body.theme-frozen .decor-h,body.theme-frozen .decor-c{opacity:.85;animation:iceTwinkle 3.4s ease-in-out infinite}
+body.theme-forest .question{border-color:#8ee5a477;background:linear-gradient(135deg,#102b26,#14382c 55%,#172b27);box-shadow:inset 0 0 42px #87ff9a12,0 0 22px #6bda8130}
+body.theme-forest .question:after{opacity:1;background:radial-gradient(ellipse at 0% 100%,#a7ff6b20,transparent 45%),radial-gradient(ellipse at 100% 0%,#53e4a018,transparent 45%)}
+body.theme-forest .decor-g,body.theme-forest .decor-h,body.theme-forest .decor-c{opacity:.9;animation:fireflyQuestion 3.7s ease-in-out infinite}
+body.theme-halloween .choices button{border-color:#d57a4b66;background:linear-gradient(135deg,#2b1d34,#241b2a)}
+body.theme-halloween .choices button:hover{border-color:#ff9b54;box-shadow:0 0 18px #ff803a30;transform:translateY(-2px)}
+body.theme-christmas .choices button{border-color:#b5efff66;background:linear-gradient(135deg,#153b4b,#183747)}
+body.theme-christmas .choices button:hover{border-color:#f5ffff;box-shadow:0 0 18px #c9f7ff30;transform:translateY(-2px)}
+body.theme-frozen .choices button{border-color:#7cdfff55;background:linear-gradient(135deg,#142e43,#182941)}
+body.theme-frozen .choices button:hover{border-color:#a7f0ff;box-shadow:0 0 18px #7ddfff30;transform:translateY(-2px)}
+body.theme-forest .choices button{border-color:#7bdc8a55;background:linear-gradient(135deg,#17372d,#1c332c)}
+body.theme-forest .choices button:hover{border-color:#aaff9c;box-shadow:0 0 18px #7bff8d26;transform:translateY(-2px)}
+.question .choices button{position:relative;z-index:3;transition:transform .18s,border-color .18s,box-shadow .18s}
+@keyframes hauntFloat{0%,100%{translate:0 0;rotate:-5deg}50%{translate:0 -8px;rotate:7deg}}
+@keyframes sweetSnow{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -9px;rotate:10deg}}
+@keyframes iceTwinkle{0%,100%{translate:0 0;scale:.88;opacity:.5}50%{translate:0 -8px;scale:1.08;opacity:1}}
+@keyframes fireflyQuestion{0%,100%{translate:0 0;scale:.8;opacity:.45}50%{translate:6px -10px;scale:1.12;opacity:1}}
+@media(max-width:600px){.question-decor .decor{font-size:1.35rem}}
+@media(prefers-reduced-motion:reduce){.question-decor .decor{animation:none!important}}
+
+
+/* High-contrast trivia question text: readable across every realm theme */
+.question, body.theme-halloween .question, body.theme-christmas .question, body.theme-frozen .question, body.theme-forest .question { color:#f8fbff !important; }
+.question h2, #prompt { color:#fff !important; text-shadow:0 2px 8px rgba(0,0,0,.65),0 0 1px rgba(0,0,0,.5); font-weight:900; }
+.question .qmeta, .question #category, .question #reward { color:#f4f9ff !important; text-shadow:0 1px 4px rgba(0,0,0,.65); }
+.question .diff { text-shadow:none; }
+.question .choices button, .question .choice { color:#10283b !important; background:#fff !important; border-color:#c5dced !important; font-weight:800; text-shadow:none !important; }
+.question .choices button:hover:not(:disabled) { background:#f0f8ff !important; border-color:#65cfff !important; }
+.question .choices button.correct { background:#d9f8e6 !important; color:#145b38 !important; border-color:#48b77c !important; }
+.question .choices button.wrong { background:#ffe0e0 !important; color:#852222 !important; border-color:#e36a6a !important; }
+
+</style></head>
+<body><main>
+<section class="card online-card" id="onlineLobby">
+ <div class="online-heading"><div><div class="sectiontitle">🌐 ONLINE REALMS</div><p class="smallprint">Gather your party, create a realm, and battle together.</p></div><span class="online-status" id="connectionStatus">Connecting…</span></div>
+ <div class="online-step"><span class="step-number">1</span><div class="step-copy"><b>Identify your champion</b><small>Everyone in the realm uses their own name.</small></div></div>
+ <div class="field"><label for="onlineName">PLAYER NAME</label><input id="onlineName" maxlength="18" placeholder="Enter your name" value="Player"></div>
+ <div class="online-divider"></div>
+ <div class="online-step"><span class="step-number">2</span><div class="step-copy"><b>Create a realm</b><small>Choose private for friends or public for matchmaking.</small></div></div>
+ <div class="online-create-grid">
+  <div class="realm-option private-option"><div class="realm-option-icon">🔒</div><b>Private Realm</b><small>Invite friends with a room code.</small><button class="primary" id="createPrivate">Create Private</button></div>
+  <div class="realm-option public-option"><div class="realm-option-icon">🌍</div><b>Public Realm</b><small>Let other players discover your room.</small><div class="field"><label for="roomName">REALM NAME</label><input id="roomName" maxlength="30" placeholder="My Mythic Arena" value="My Mythic Arena"></div><button class="primary" id="createPublic">Create Public</button></div>
+ </div>
+ <div class="online-divider"></div>
+ <div class="online-step"><span class="step-number">3</span><div class="step-copy"><b>Join an existing realm</b><small>Enter a friend's code or browse public rooms.</small></div></div>
+ <div class="join-row"><div class="field"><label for="joinCode">INVITE CODE</label><input id="joinCode" maxlength="6" placeholder="ABC123" style="text-transform:uppercase"></div><button class="secondary" id="joinPrivate">Join Private Realm</button></div>
+ <div class="public-browser-head"><b>Public Realm Browser</b><button class="secondary tiny" id="refreshPublic">↻ Refresh list</button></div>
+ <div class="public-rooms" id="publicRooms"><p class="smallprint">Refresh to discover open public realms.</p></div>
+ <div class="online-room" id="onlineRoom" hidden>
+  <div class="room-header"><div><b id="currentRoomTitle">Room</b><div class="room-meta"><span class="pill" id="currentRoomType">PRIVATE</span><span class="pill">Code: <b id="currentRoomCode">—</b></span></div></div><span class="room-live">● IN REALM</span></div>
+  <div class="online-members" id="onlineMembers"></div>
+  <div class="online-room-actions"><button class="secondary" id="copyInvite">Copy Invite Code</button><button class="secondary" id="leaveRoom">Leave Realm</button></div>
+  <div class="online-room-actions online-battle-actions"><button class="secondary" id="chooseChampion">Choose / Change Champion</button><button class="primary" id="startOnlineMatch" disabled>Start Online Battle</button></div>
+  <p class="smallprint" id="readyHint">Choose a champion to ready up. The host can start when at least two players are ready.</p>
+ </div>
+ <div class="notice" id="onlineNotice" aria-live="polite"></div>
+</section>
+<style>
+.online-card{margin:0 0 20px;padding:clamp(16px,3vw,26px);border:1px solid #7bdfff35;background:linear-gradient(145deg,#10243c,#0a172a 75%);box-shadow:0 18px 55px #0004}.online-heading{display:flex;align-items:center;justify-content:space-between;gap:14px}.online-heading .sectiontitle{margin:0}.online-heading p{margin:7px 0 0}.online-status{flex-shrink:0;font-size:.72rem;color:#a9c7d9;letter-spacing:0;padding:7px 10px;border-radius:99px;background:#0b1728;border:1px solid #ffffff18}.online-step{display:flex;align-items:center;gap:11px;margin:20px 0 12px}.step-number{display:grid;place-items:center;width:29px;height:29px;border-radius:9px;background:linear-gradient(135deg,#ffe6a3,#ffc85c);color:#18243a;font-weight:1000}.step-copy b,.step-copy small{display:block}.step-copy b{font-size:.92rem}.step-copy small{font-size:.76rem;color:#a9bfd4;margin-top:2px}.online-divider{height:1px;background:linear-gradient(90deg,#8ceaff2b,#ffffff12,transparent);margin:18px 0}.online-card input{width:100%;min-width:0}.online-create-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.realm-option{padding:15px;border:1px solid #ffffff1c;border-radius:14px;background:#0b192b;display:flex;flex-direction:column;gap:8px}.private-option{border-color:#c7a6ff38}.public-option{border-color:#8ceaff38}.realm-option-icon{font-size:1.35rem}.realm-option>b{font-size:.95rem}.realm-option>small{color:#a9bfd4;font-size:.78rem;line-height:1.45;min-height:30px}.realm-option button{width:100%;margin-top:auto}.realm-option .field{margin:3px 0 4px}.realm-option .field label,.online-card .field label{font-size:.7rem;letter-spacing:.08em;color:#a9bfd4}.join-row{display:flex;align-items:end;gap:10px}.join-row .field{flex:1}.join-row button{min-height:43px;white-space:nowrap}.public-browser-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 8px}.public-browser-head b{font-size:.9rem}.public-rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:9px}.public-room{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;background:linear-gradient(135deg,#14253d,#101a2e);border:1px solid #ffffff20;border-radius:12px}.public-room b{font-size:.85rem}.public-room small{color:#b9cce2;display:block;margin-top:3px}.public-room button{padding:7px 12px;white-space:nowrap}.online-room{padding:15px;border:1px solid #ffd47d55;border-radius:15px;background:linear-gradient(135deg,#101b31,#090f20);margin-top:16px}.room-header{display:flex;justify-content:space-between;align-items:center;gap:12px}.room-header>b,.room-header b{font-size:1rem}.room-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}.room-live{font-size:.7rem;font-weight:900;letter-spacing:.08em;color:#86f0bb;white-space:nowrap}.online-members{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.online-member{padding:7px 11px;border-radius:99px;background:#142846;border:1px solid #8ceaff44;font-weight:800;font-size:.82rem}.online-room-actions{display:flex;gap:8px;flex-wrap:wrap}.online-room-actions button{flex:1}.online-battle-actions{margin-top:9px}.online-battle-actions button:disabled{opacity:.45;cursor:not-allowed}.online-card .notice{margin-top:12px}@media(max-width:560px){.online-create-grid{grid-template-columns:1fr}.join-row{align-items:stretch;flex-direction:column}.join-row button{width:100%}.online-heading{align-items:flex-start;flex-direction:column}.online-status{align-self:flex-start}.room-header{align-items:flex-start;flex-direction:column}.room-live{align-self:flex-start}}
+</style>
+
+<header class="hero"><div class="eyebrow">✦ The realm of knowledge & combat ✦</div><h1>MYTHIC CLASH</h1><p class="sub">Answer the call. Outsmart your rivals. Rule the realm.</p></header>
+<section class="card">
+<div class="mountain theme-frozen" id="mapBanner" data-theme="frozen"><div class="theme-fx" aria-hidden="true"><span class="fx-one">❄</span><span class="fx-two">✦</span><span class="fx-three">❄</span><span class="fx-four">✧</span><span class="fx-five">✦</span></div><div class="sun"></div><div class="peak p1"></div><div class="peak p2"></div><div class="peak p3"></div><div class="peak-sheen"></div></div>
+<div class="sectiontitle">✧ Choose your realm</div>
+<div class="mapgrid" role="group" aria-label="Choose a map">
+<button class="mapcard selected" data-map="frozen" onclick="selectMap('frozen')" aria-pressed="true"><span class="seasonbadge">ALL SEASON</span><span class="mapart"><span>❄️</span></span><span class="mapname">Frozen Peaks</span><span class="mapdesc">Icy cliffs · Aurora skies</span></button>
+<button class="mapcard" data-map="halloween" onclick="selectMap('halloween')" aria-pressed="false"><span class="seasonbadge">OCTOBER</span><span class="mapart"><span>🎃</span></span><span class="mapname">Haunted Hollow</span><span class="mapdesc">Ghosts · Moonlit woods</span></button>
+<button class="mapcard" data-map="christmas" onclick="selectMap('christmas')" aria-pressed="false"><span class="seasonbadge">DECEMBER</span><span class="mapart"><span>🎄</span></span><span class="mapname">Santa's Summit</span><span class="mapdesc">Sleigh bells · Snowfall</span></button>
+<button class="mapcard" data-map="forest" onclick="selectMap('forest')" aria-pressed="false"><span class="seasonbadge">EXPLORE</span><span class="mapart"><span>🌲</span></span><span class="mapname">Enchanted Forest</span><span class="mapdesc">Ancient magic · Wilds</span></button>
+</div>
+<div class="sectiontitle">✧ Configure your battle</div>
+<div class="setup setting-hub" id="settingHub">
+<div class="field setting-station" data-setting="mode" style="--accent:#ffc96d">
+  <button type="button" class="setting-trigger" aria-expanded="false" aria-controls="options-mode"><span class="station-symbol">⚔</span><span class="station-copy"><small>BATTLE MODE</small><strong id="value-mode">Free-for-All</strong><em>Choose your rules</em></span><span class="station-arrow">✦</span></button>
+  <div class="setting-options" id="options-mode" hidden></div>
+  <select id="mode" class="setting-source" tabindex="-1" aria-hidden="true"><option>Free-for-All</option><option>Team Battles (coming next)</option></select>
+</div>
+<div class="field setting-station" data-setting="count" style="--accent:#8ceaff">
+  <button type="button" class="setting-trigger" aria-expanded="false" aria-controls="options-count"><span class="station-symbol">♟</span><span class="station-copy"><small>PLAYERS</small><strong id="value-count">6 Players</strong><em>Choose your challengers</em></span><span class="station-arrow">✦</span></button>
+  <div class="setting-options player-options" id="options-count" hidden></div>
+  <select id="count" class="setting-source" tabindex="-1" aria-hidden="true"><option>2</option><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
+</div>
+<div class="field setting-station" data-setting="topic" style="--accent:#c7a6ff">
+  <button type="button" class="setting-trigger" aria-expanded="false" aria-controls="options-topic"><span class="station-symbol">✧</span><span class="station-copy"><small>QUESTION TOPIC</small><strong id="value-topic">Mixed topics</strong><em>Choose your knowledge realm</em></span><span class="station-arrow">✦</span></button>
+  <div class="setting-options" id="options-topic" hidden></div>
+  <select id="topic" class="setting-source" tabindex="-1" aria-hidden="true"><option value="Mixed" selected>Mixed topics</option><option value="Celebrities">Celebrities</option><option value="Soccer">Soccer</option><option value="Basketball">Basketball</option><option value="General Knowledge">General Knowledge</option><option value="Science">Science</option><option value="History">History</option><option value="Nature">Nature</option><option value="Space">Space</option><option value="Geography">Geography</option></select>
+</div>
+<div class="field setting-station" data-setting="difficulty" style="--accent:#ff9bb7">
+  <button type="button" class="setting-trigger" aria-expanded="false" aria-controls="options-difficulty"><span class="station-symbol">☄</span><span class="station-copy"><small>DIFFICULTY</small><strong id="value-difficulty">Mixed</strong><em>Set the challenge</em></span><span class="station-arrow">✦</span></button>
+  <div class="setting-options" id="options-difficulty" hidden></div>
+  <select id="difficulty" class="setting-source" tabindex="-1" aria-hidden="true"><option selected>Mixed</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
+</div>
+<div class="field setting-station" data-setting="duration" style="--accent:#8dffc5">
+  <button type="button" class="setting-trigger" aria-expanded="false" aria-controls="options-duration"><span class="station-symbol">⌛</span><span class="station-copy"><small>MATCH LENGTH</small><strong id="value-duration">3 Minutes</strong><em>Set your battle time</em></span><span class="station-arrow">✦</span></button>
+  <div class="setting-options" id="options-duration" hidden></div>
+  <select id="duration" class="setting-source" tabindex="-1" aria-hidden="true"><option>2</option><option selected>3</option><option>5</option></select>
+</div>
+</div>
+<div class="topbar"><span class="pill" id="round">ROUND 1</span><div class="timerwrap"><div class="timerlabel"><span>QUESTION TIMER</span><strong id="qtime">15.0s</strong></div><div class="track"><div id="qbar"></div></div></div><span class="pill" id="clock">MATCH 3:00</span></div>
+<div class="turnbanner" id="turnbanner">✦ Waiting for the battle to begin ✦</div>
+<div class="question"><div class="question-decor" aria-hidden="true"><span class="decor decor-a">🎃</span><span class="decor decor-b">👻</span><span class="decor decor-c">🕸️</span><span class="decor decor-d">🍬</span><span class="decor decor-e">🎄</span><span class="decor decor-f">❄️</span><span class="decor decor-g">🌿</span><span class="decor decor-h">✨</span></div><div class="qmeta"><span id="category">Nature</span><span id="diff" class="diff Easy">EASY</span><span id="reward">10 damage · 100 points</span></div><h2 id="prompt">Ready?</h2><div class="choices" id="choices"></div></div>
+<div class="lobbytools"><button class="secondary tiny musicbutton" id="musicToggle" onclick="toggleMusic()">♫ Ambient music: Off</button><span class="statuschip" id="mapHint">Frozen Peaks selected · Ice-themed trivia arena</span></div>
+<div class="notice" id="notice">Choose your realm and settings, then begin the battle.</div>
+<div class="footer"><button class="primary" id="start" onclick="startGame()">Start Match</button><button class="secondary" onclick="restartGame()">Restart</button></div>
+<div class="players" id="players"></div>
+<p class="smallprint">BATTLE MODE · Online battles are synchronized through the realm server. Each champion takes a turn, chooses a target, and answers the shared question. Correct answers deal damage; incorrect answers miss.</p>
+</section></main>
+
+<div class="character-overlay" id="characterOverlay" aria-modal="true" role="dialog" aria-labelledby="characterTitle">
+ <div class="character-modal">
+  <div class="eyebrow">✦ CHOOSE YOUR CHAMPION ✦</div>
+  <h2 id="characterTitle">Select Your Warriors</h2>
+  <p class="character-intro">Every player chooses a hero before the gates open. Pick a class and weapon style for your fighter.</p>
+  <div id="characterChoices" class="character-choices"></div>
+  <div class="character-footer"><span id="characterProgress">Every challenger needs a champion</span><button class="primary" id="enterArena" onclick="confirmCharacters()">Enter the Arena ⚔</button></div>
+ </div>
+</div>
+
+<div class="cutscene" id="cutscene" aria-live="assertive"><div class="cutscene-rays"></div><div class="battle-stage" id="battleStage"><div class="arena-moon"></div><div class="arena-rune rune-left">ᚱ</div><div class="arena-rune rune-right">✧</div><div class="arena-ground"></div><div class="battle-actor attacker"><span class="actor-emoji" id="sceneAttacker">🧙</span><span class="actor-weapon" id="sceneAttackerWeapon">🔮</span><span class="actor-label" id="sceneAttackerName">PLAYER 2</span></div><div class="battle-projectile" id="sceneProjectile">🔥</div><div class="projectile-trail"></div><div class="battle-impact" id="sceneImpact">💥</div><div class="impact-shards">✦　✧　✦</div><div class="battle-actor defender"><span class="actor-emoji" id="sceneDefender">🐺</span><span class="actor-label" id="sceneDefenderName">PLAYER 1</span></div></div><div class="cutscene-content"><div class="cutscene-icon" id="cutIcon">⚔️</div><div class="cutscene-kicker">BATTLE MOMENT</div><h2 id="cutTitle">MAGIC STRIKE!</h2><p id="cutText">A powerful hit lands!</p></div></div>
+<div class="overlay" id="overlay"><div class="modal"><div class="eyebrow">Match complete</div><h2 id="endtitle">Victory!</h2><p id="endtext"></p><button class="primary" onclick="restartGame()">Play again</button></div></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id); let socket=null, room=null, myId=null; window.MCOnline={get room(){return room},get myId(){return myId},get socket(){return socket}};
+ const status=(msg)=>$('onlineNotice').textContent=msg;
+ const showStatus=(msg,ok=false)=>{ $('connectionStatus').textContent=msg; $('connectionStatus').style.color=ok?'#77e6ad':'#ffb8b8'; };
+ function connect(){
+  try{socket=io();}catch(e){showStatus('Server not connected');return}
+  socket.on('connect',()=>{myId=socket.id;showStatus('Connected ✓',true);socket.emit('rooms:list')});
+  socket.on('disconnect',()=>showStatus('Disconnected — retrying'));
+  socket.on('connect_error',()=>showStatus('Server offline / not deployed'));
+  socket.on('room:joined',data=>{room=data;renderRoom();status('Joined '+data.code+'. Share the code with friends!');$('joinCode').value=data.code});
+  socket.on('room:update',data=>{if(room&&room.code===data.code){room=data;renderRoom()}});
+  socket.on('game:update',state=>{if(window.applyOnlineGameState)window.applyOnlineGameState(state)});
+  socket.on('game:error',msg=>status(msg));
+  socket.on('room:left',()=>{room=null;renderRoom();status('You left the room.')});
+  socket.on('rooms:list',rooms=>renderPublic(rooms));
+  socket.on('room:error',msg=>status(msg));
+ }
+ function playerName(){return $('onlineName').value.trim().slice(0,18)||'Player'}
+ function renderRoom(){const el=$('onlineRoom');el.hidden=!room;if(!room)return;
+  $('currentRoomTitle').textContent=room.name||'Mythic Clash Room';$('currentRoomType').textContent=room.isPublic?'PUBLIC':'PRIVATE';$('currentRoomCode').textContent=room.code;
+  $('onlineMembers').innerHTML='';room.players.forEach((p)=>{const tag=document.createElement('span');tag.className='online-member';tag.textContent=(p.name||'Player')+(p.id===myId?' (You)':'')+(p.ready?' ✓':' · choosing hero');$('onlineMembers').appendChild(tag)});
+  const ready=room.players.filter(p=>p.ready).length, host=room.hostId===myId;
+  $('readyHint').textContent=room.gameStarted?'Battle in progress — rejoin the action below.':`${ready}/${room.players.length} champions ready. ${host?'You are the host.':'Waiting for the host to start.'}`;
+  $('startOnlineMatch').hidden=!host;$('startOnlineMatch').disabled=!!room.gameStarted||room.players.length<2||ready!==room.players.length;
+  $('startOnlineMatch').textContent=room.gameStarted?'Battle in progress':'Start Online Battle';
+  $('chooseChampion').disabled=!!room.gameStarted;
+ }
+ function renderPublic(rooms){const el=$('publicRooms');el.innerHTML='';if(!rooms.length){el.innerHTML='<p class="smallprint">No public rooms found right now.</p>';return}
+  rooms.forEach(r=>{const card=document.createElement('div');card.className='public-room';const info=document.createElement('div');info.innerHTML='<b></b><small></small>';info.querySelector('b').textContent=r.name;info.querySelector('small').textContent=r.players+' player(s) · '+r.code;const btn=document.createElement('button');btn.className='primary tiny';btn.textContent='Join';btn.onclick=()=>socket.emit('room:joinPublic',{code:r.code,name:playerName()});card.append(info,btn);el.appendChild(card)});
+ }
+ function ensure(){if(!socket||!socket.connected){status('Connect to the deployed server first.');return false}return true}
+ $('createPrivate').onclick=()=>{if(ensure())socket.emit('room:create',{name:playerName(),roomName:'Private Mythic Clash',isPublic:false})};
+ $('createPublic').onclick=()=>{if(ensure())socket.emit('room:create',{name:playerName(),roomName:$('roomName').value.trim()||'Mythic Clash Arena',isPublic:true})};
+ $('joinPrivate').onclick=()=>{if(ensure()){const code=$('joinCode').value.trim().toUpperCase();if(!code){status('Enter a room code first.');return}socket.emit('room:join',{code,name:playerName()})}};
+ $('refreshPublic').onclick=()=>{if(ensure())socket.emit('rooms:list')};
+ $('leaveRoom').onclick=()=>{if(ensure()&&room)socket.emit('room:leave')};
+ $('copyInvite').onclick=async()=>{if(!room)return;try{await navigator.clipboard.writeText(room.code);status('Room code copied!')}catch(e){status('Your room code is '+room.code)}};
+ $('chooseChampion').onclick=()=>{if(window.startGame)window.startGame()};
+ $('startOnlineMatch').onclick=()=>{if(!ensure()||!room)return;socket.emit('onlinebattle:start',{bank:window.MYTHIC_BANK||[],duration:$('duration').value,topic:$('topic').value,difficulty:$('difficulty').value})};
+ connect();
+})();
+</script>
+
+<script>
+const BANK=[
+{d:"Easy",t:15,damage:10,points:100,cat:"Nature",q:"What is the largest land animal?",a:["African elephant","Giraffe","Polar bear","Rhinoceros"],c:0},
+{d:"Medium",t:10,damage:20,points:200,cat:"Science",q:"What is the chemical symbol for gold?",a:["Ag","Gd","Au","Go"],c:2},
+{d:"Hard",t:5,damage:35,points:350,cat:"Geography",q:"Which country has the most time zones when overseas territories are included?",a:["Russia","United States","France","Australia"],c:2},
+{d:"Easy",t:15,damage:10,points:100,cat:"Space",q:"Which planet is known as the Red Planet?",a:["Venus","Mars","Jupiter","Mercury"],c:1},
+{d:"Medium",t:10,damage:20,points:200,cat:"History",q:"Petra, the ancient archaeological city, is in which modern country?",a:["Egypt","Jordan","Greece","Turkey"],c:1},
+{d:"Hard",t:5,damage:35,points:350,cat:"Science",q:"Which particle carries the electromagnetic force?",a:["Gluon","Neutrino","Photon","Higgs boson"],c:2},
+{d:"Easy",t:15,damage:10,points:100,cat:"Animals",q:"What do bees collect from flowers to make honey?",a:["Nectar","Sap","Dew","Bark"],c:0},
+{d:"Medium",t:10,damage:20,points:200,cat:"Math",q:"What is 12 squared?",a:["124","144","132","156"],c:1},
+{d:"Hard",t:5,damage:35,points:350,cat:"Literature",q:"Who wrote One Hundred Years of Solitude?",a:["Jorge Luis Borges","Pablo Neruda","Gabriel García Márquez","Isabel Allende"],c:2},
+{d:"Easy",t:15,damage:10,points:100,cat:"Frozen Peaks",q:"At what temperature does water freeze in Celsius under standard conditions?",a:["0°C","10°C","32°C","-10°C"],c:0},
+{d:"Medium",t:10,damage:20,points:200,cat:"Science",q:"Which gas makes up the largest portion of Earth's atmosphere?",a:["Oxygen","Carbon dioxide","Nitrogen","Hydrogen"],c:2},
+{d:"Hard",t:5,damage:35,points:350,cat:"History",q:"In which year did Constantinople fall to the Ottoman Empire?",a:["1204","1453","1492","1529"],c:1},
+{d:"Easy",t:15,damage:10,points:100,cat:"Celebrities",q:"Which singer is known as the 'Queen of Pop'?",a:["Beyoncé","Madonna","Adele","Rihanna"],c:1},
+{d:"Medium",t:10,damage:20,points:200,cat:"Celebrities",q:"Which actor played Jack in the film Titanic (1997)?",a:["Brad Pitt","Leonardo DiCaprio","Matt Damon","Tom Cruise"],c:1},
+{d:"Hard",t:5,damage:35,points:350,cat:"Celebrities",q:"Which artist released the album 'Lemonade' in 2016?",a:["Taylor Swift","Adele","Beyoncé","Lady Gaga"],c:2},
+{d:"Easy",t:15,damage:10,points:100,cat:"Soccer",q:"How many players from one team are on the field at the start of a standard soccer match?",a:["9","10","11","12"],c:2},
+{d:"Medium",t:10,damage:20,points:200,cat:"Soccer",q:"Which country won the men's FIFA World Cup in 2022?",a:["France","Argentina","Brazil","Croatia"],c:1},
+{d:"Hard",t:5,damage:35,points:350,cat:"Soccer",q:"Which club won the first edition of the European Cup in 1956?",a:["AC Milan","Real Madrid","Benfica","Liverpool"],c:1},
+{d:"Easy",t:15,damage:10,points:100,cat:"Basketball",q:"How many points is a shot worth when made from behind the three-point line?",a:["1","2","3","4"],c:2},
+{d:"Medium",t:10,damage:20,points:200,cat:"Basketball",q:"How many players from one team are on the court in standard basketball?",a:["4","5","6","7"],c:1},
+{d:"Hard",t:5,damage:35,points:350,cat:"Basketball",q:"Which player is nicknamed 'The Greek Freak'?",a:["Nikola Jokić","Giannis Antetokounmpo","Luka Dončić","Joel Embiid"],c:1},
+{d:"Easy",t:15,damage:10,points:100,cat:"General Knowledge",q:"Which instrument usually has 88 keys?",a:["Guitar","Piano","Violin","Flute"],c:1},
+{d:"Medium",t:10,damage:20,points:200,cat:"Geography",q:"What is the capital city of Japan?",a:["Kyoto","Seoul","Tokyo","Osaka"],c:2},
+{d:"Easy",t:15,damage:10,points:100,cat:"Science",q:"What force pulls objects toward Earth?",a:["Magnetism","Gravity","Friction","Electricity"],c:1},
+{d:"Medium",t:10,damage:20,points:200,cat:"Space",q:"Which planet is famous for its prominent rings?",a:["Mars","Saturn","Mercury","Venus"],c:1}
+ ];
+window.MYTHIC_BANK=BANK;
+const MAPS={
+ frozen:{name:'Frozen Peaks',hint:'Ice-themed trivia arena',bg:'radial-gradient(ellipse at 50% -10%,#315b83 0,#101f3d 42%,#050b19 100%)',banner:'linear-gradient(#132c57 0%,#4c83aa 55%,#c9efff 100%)',sun:'#ffe7a3'},
+ halloween:{name:'Haunted Hollow',hint:'Spooky riddles and eerie surprises',bg:'radial-gradient(ellipse at 50% -10%,#55205f 0,#1b1234 43%,#090817 100%)',banner:'linear-gradient(#21113c 0%,#69345f 58%,#ef8b4b 100%)',sun:'#ffd1a1'},
+ christmas:{name:"Santa's Summit",hint:'Festive challenges and winter magic',bg:'radial-gradient(ellipse at 50% -10%,#23655f 0,#102d3e 43%,#071420 100%)',banner:'linear-gradient(#17465d 0%,#398c82 55%,#e4f8ff 100%)',sun:'#fff2c6'},
+ forest:{name:'Enchanted Forest',hint:'Nature, creatures, and ancient magic',bg:'radial-gradient(ellipse at 50% -10%,#24634d 0,#102d30 43%,#061713 100%)',banner:'linear-gradient(#123f39 0%,#41865c 55%,#c7eab0 100%)',sun:'#fff0b4'}
+};let selectedMap='frozen';let musicOn=false,audioCtx=null,musicTimer=null,musicStep=0;
+function selectMap(key){if(!MAPS[key])return;selectedMap=key;const m=MAPS[key];document.body.classList.remove('theme-frozen','theme-halloween','theme-christmas','theme-forest');document.body.classList.add('theme-'+key);document.querySelectorAll('.mapcard').forEach(b=>{const yes=b.dataset.map===key;b.classList.toggle('selected',yes);b.setAttribute('aria-pressed',String(yes))});document.body.style.background=m.bg;const banner=document.getElementById('mapBanner');banner.style.background=m.banner;banner.classList.remove('theme-frozen','theme-halloween','theme-christmas','theme-forest','realm-burst');banner.classList.add('theme-'+key);banner.dataset.theme=key;banner.querySelector('.sun').style.background=m.sun;void banner.offsetWidth;banner.classList.add('realm-burst');setTimeout(()=>banner.classList.remove('realm-burst'),950);document.getElementById('mapHint').textContent=m.name+' selected · '+m.hint;document.getElementById('category').textContent=m.name;document.getElementById('notice').textContent=m.name+' awaits. Configure your battle and begin!';}
+function toggleMusic(){musicOn=!musicOn;const btn=document.getElementById('musicToggle');btn.textContent=musicOn?'♫ Ambient music: On':'♫ Ambient music: Off';btn.classList.toggle('sound-on',musicOn);if(musicOn){try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();audioCtx.resume();playAmbient()}catch(e){btn.textContent='♫ Ambient music unavailable'}}else if(musicTimer){clearTimeout(musicTimer);musicTimer=null}}
+function playAmbient(){if(!musicOn||!audioCtx)return;const notes={frozen:[220,277.18,329.63,440],halloween:[146.83,174.61,220,261.63],christmas:[261.63,329.63,392,523.25],forest:[196,246.94,293.66,392]}[selectedMap];const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.type='sine';osc.frequency.value=notes[musicStep%notes.length];gain.gain.setValueAtTime(.0001,audioCtx.currentTime);gain.gain.exponentialRampToValueAtTime(.018,audioCtx.currentTime+.25);gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+1.8);osc.connect(gain);gain.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+1.85);musicStep++;musicTimer=setTimeout(playAmbient,selectedMap==='halloween'?900:1250)}
+const HERO_ART={'knight':'data:image/webp;base64,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','mage':'data:image/webp;base64,UklGRqwKAABXRUJQVlA4IKAKAADQKQCdASpLAHAAPkkgjUWioiESyV2EKASEoAtRroQe/d+apcmzoFltr/7H1g+Uh0MvMR5sf+x/bD3j7zJ6D3S+/4vzgLxk/T+EPjw+KywfADUg7a/2vmx4F/HDUC8Sb++AL629tp6V+IB+pH/B9aPCj+zeoL+hf+t7Mv+J5MPpn/0e4V+uH/WTnXgcemcWwgAgcWlWCqxNFpMsJ9LgWRZ1FH/v/4VT08PSJlH9WsMlnGbvCdnNTokqw5O7QhBDRjgxzIGajuWmugoC9o9Tziw8DiR8S/lSW2cs7GgZaJ3vWDd42dc/VHYOPqzFurNK5y8qTluLTxT8pAbRI1wD3/BvROrVhSSQ+j1VpR2p4jgx58CY0loPR+oqflEW04cdHdqTvhXNOb0jt0gX0qiJYlyULryzG6xGgoRKymb2D7OAnOSi293hlUCIqR5iUyiLpSjXDI3z2hUAAP7/uXVbTwk0SyOEjXyG29tp9dbP4rt29gM2Z+B2a7k/Hvz+dxEE9raTD6//SJz9zK6oOP/1yRnafRpBFMfe/hC92o8vMxLi8ab/yztskzP8eLayUonDIgtB6vAJ0MxitYrrhFEgdrnYv1V6U03fS4D5IJWZBz/k41dh4A71oeveiqIDUzg2UOi6ltOPDnSdNJIu6/mSZpp2rh74GoUdqNWdu+DhTaXH+SOuubvO3okbN+7umhwNAVvRvN1w36afLONRqq9Bju000WIomvdw/PRX9TjY+jfgmv4k8JfzJK8KlBk9gAjP1Ifl+mncNVFji9+dhOSge9emZVu3D1o5S5UW9uq9Zi6WWe59tUk/8V85C6RpQCk5fxPCBQsfSUcqNjyThnllU4RP1/pyfaO01vJAx1mvL2FR3/kHKf8m3dl/k+2LaH9FonXfEN9991kxa3D4GZuOhPzxfjY8+w0AjCJ37tcyz4VMeIwVvZiyN1f2YTY5hOFpApAB+xx189yb2r6KBCqPIAdXI6NzInHtwNp3PzId3Qiwd28E3QY6w4xQBkMZ9UplA4fKb6wA0HIfmrB0uNtPHNQyjiPHMP0lg38B36zAaDdIPaniY2TbLAykd3inpS6lzj+ZhGS1ojgZaodaG1O5MqFlMSrjt613zATvsLGvqr9RUe95bgC2TgWDSxz4HZxiFu/jfZFp637CnYWlZnma3IdkaIOLNtxp47ok4sMWnLX2dAQ9dwqh7HE17Bu+w2vYLfMNN2jeVVHi+kbAoyzXNMI5r5YvACu/EPm8K610/IxlP5ctOU4dyQZMxCXCn37iEVg1EAyvLXHhcy+FFgR7l9/TotPHpNE1/t/52IYu4DmIhfG51zGL7+82i1q6GLWH4SMRGyO1jP1D8QioUrUphg7/2uNZqwdbCS5Nv10WU6VqFrslJGvHI1vFuQ3J2GbyHxlmEbymG8vpHejupOGfcRKD9JURe5Njj1tKCaTMnJSpWmRpDcTQa+F5S7zcYQZ6PU5hzguecuLvzfNtdND7kalLUJS9YlahjdAP2umBHllv5RnqtlyUjWl1vWItrFpdWILXkMXhQ+HQt954o29aBrGvurNmORFsgDm/FMB2Vkt388hm7nfzz9lZr7pMCRTjRlD/WxuVv6z+fLvaGX5OHD4EGC2cXJtGXIFmAXmXvn9WRsOpnYaQcMPQ/CdQuwZq9O9PTuJJQUsKCahuh8UY5ewuUjJf4AAweR/kM6Bfcfo5bNwkl3P/uH9EYaZ05G09Lgg8qk9nWLf+hDwRJanQ8RwYVrdsh39OrMzqSnI8nowMA+OrVEd5C2gi1hfCws0lP4HmVUB9RrhYjUuXybcqHVn25dxRTeJ2cUqIBj/EC/1K7XUlaEtgNfgq/tGng8YyiLGA97QGB5E5oKYzBw0+NDZ+FTbBfMmzX7P0G3kmcFRMpSf+1BqezfILGB5b90b6RD+m/n8MHeoFEYR/McPtCDowWSXfPEbfSr65fdtb/E9qAHfZ7fk/eEh8bN77vdVC+KOeNnEdrMs+ZVwztPFDnttMgqchYPvNGWtcyQkgW5qiZkrq2BhRTLC80UGexeT+6WOg8V20LdDo1lv7pQA+LMYASgEx6lAA3TdBFU1e/Uu1tWcSiHa65GNj4RTxynYY1tbRJmquJVgJQnD6tfNClueZv/jjM2muQIU482X/lj51qoLAbTiKRKipGZbs3ZVenXZ/DfFOFXLxJZdonlBHddqRjGaSgwG/nt54WyClidWG0jvUHLR4df+sYjev450RQVuD5XjedOsnGfb5GXYs/o2KMepipdx2r0z/SYSht7fi577qGf0AEdLZaR6QJdsNSsDSIxVg5nPPDVmOp/7wf439zt3pn5J6jdSv8EIx7GdhrjY78R/47DU0x/OVDw/TjuVurSXAKnRv/yhz8ZTFzA0xqfiGDlkhd+TfiUbWM0qGhWYJPxgbBnPZwvsmPZeYxjEn9uoMRsEVeFXJaMuwSU8D2uqP70km/An61/HpD/kLUwxWWNBMZ2b9VZuufxpp37RI4h34a3qyZ1jSeImLQlqiaKcwjqsEXgMpyEA0W2oqjVhLIeMDpdCHnxs4BP2IQQS+XogISsrkqnwWd3gs+Zmlx+CRWuSw9b7SeWIhlzzosw2OxFnSMdBWYpfVCQU5gXtzsgJdT5RdPpkiHwARg+sQrKvfg8r8GLou0KRh4SoHLYqD9UZKlwSAebBj/J3wUwbimoPvDjYp2LqmK/16nXucFvXMhV0nVfohgLEu+0xd+MAwLp6WMX4nX5PMzs2Na770lbdkXSJUd5j2ogxncmR+Tyhu+P+J/jh+R4eyZ9O0DNvtFqAZHjD9ac36tM88hFFKeVAMseoRMrx6GsZ8MXoZ5YF5LviNH/bbURVqES6QJdWdZRCC29mL/osr/4t+qYJrPTRI3SvemTqAih3+5wtapUFO2IbO5kRj4ajxBi8Ow+a8R3zmp6S4iM5ogpQzHZoj43p31xGuOp1VhzIinwMvSkBYHtTT80VXGMjg8ZUYUpZYeZJrXH0kRKqVdyXmd/z9pwE2SGbYjT/NWUSHk8Dol9cPh6aWzHv9fHy7zONMUyn7tKHhvX2oSZiHQKTFDprcRRGdoF2ufIuWWUGFuYiTBGewZKI52MjEsXje8ZC3CWn2sR6I2VyYMlw4tzG7NRe95k+ZUc8MpwbrryK/PXARh3F6h6m7vVTqYYeSNc9RWO3HYTESo4inOEdgtUvHMUOJXxYqi6OEwX5HKGWoWR9P+w/SyQuHhdpvmKLxavQ5d3Q2YnrDh2dKp31XTVVFgArPm7ta6ngR10JJ6ie/C8qNecVWrpFLfdrvNcD/yVuSeGsuKQ+vDlQD9l/5DlTVACP3nvfJBfewNhWAjZ2WK4cL4kuRXfwwARYD/Hn0FxXltQe3E12QudQFWeScnPU8+OZcGrKMdlPPKquBqXOQTu0tuyEwvzYJDjcbXK3k/Cu4BCXjz5UOiTXFTNvjuekseztZuSBCeptHt11BECG+SebBEfbVMql1yAsy0m2kJojTeN/5cXjuCy3Q1kdt92kee8rTImjY0fiQqwPnG4n4GS29P0vd+w1P2P+ZIC7iVc6QHFcJurJpHnYTPHgYLb2iJFIaDrgysiHX7+d0MTXmRvj2lJrT2u1yQ0+wsGjfotgAAA==','ranger':'data:image/webp;base64,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','berserker':'data:image/webp;base64,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','frost':'data:image/webp;base64,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','shadow':'data:image/webp;base64,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','beast':'data:image/webp;base64,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'};
+function heroArtMarkup(id){const src=HERO_ART[id];return src?'<img alt="" draggable="false" src="'+src+'">':''}
+
+const HEROES=[
+{id:'knight',name:'Knight',emoji:'🛡️',weapon:'⚔️',glow:'#8ceaff',role:'Balanced defender',tagline:'Steel, courage, and a clean strike.'},
+{id:'mage',name:'Arcane Mage',emoji:'🧙',weapon:'🔮',glow:'#c7a6ff',role:'Mystic caster',tagline:'A spellblade who hits with arcane force.'},
+{id:'ranger',name:'Ranger',emoji:'🏹',weapon:'🏹',glow:'#8dffc5',role:'Swift hunter',tagline:'Quick aim and a precise shot.'},
+{id:'berserker',name:'Berserker',emoji:'🪓',weapon:'🪓',glow:'#ff9b78',role:'Heavy hitter',tagline:'A brutal swing built for big moments.'},
+{id:'frost',name:'Frost Guardian',emoji:'❄️',weapon:'🔱',glow:'#8ceaff',role:'Ice champion',tagline:'A frozen spear with winter magic.'},
+{id:'shadow',name:'Shadow Rogue',emoji:'🥷',weapon:'🗡️',glow:'#d4a2ff',role:'Silent striker',tagline:'Fast blades from the darkness.'},
+{id:'beast',name:'Wild Beast',emoji:'🐺',weapon:'🐾',glow:'#a9e18d',role:'Feral creature',tagline:'A fierce creature that fights with tooth and claw.'}
+];
+let chosenHeroes=[],pendingHeroes=[],characterModalOpen=false;
+let G=null, interval=null;
+function shuffled(a){return [...a].sort(()=>Math.random()-.5)}
+function newGameState(){const n=+document.getElementById('count').value;return {n,players:Array.from({length:n},(_,i)=>({name:'Player '+(i+1),hero:chosenHeroes[i]||HEROES[i%HEROES.length].id,hp:150,score:0,damage:0,alive:true,answer:null,target:null,submitted:false,status:'Ready'})),round:0,left:+document.getElementById('duration').value*60,qleft:15,q:null,active:false,done:false,order:[],idx:0,answered:0,currentPlayer:0,sceneLock:false}}
+function startGame(){
+ if(interval)clearInterval(interval);
+ const onlineRoom=window.MCOnline&&window.MCOnline.room;
+ const n=onlineRoom?1:+document.getElementById('count').value;
+ pendingHeroes=onlineRoom?[chosenHeroes[0]||HEROES[0].id]:Array.from({length:n},(_,i)=>chosenHeroes[i]||HEROES[i%HEROES.length].id);
+ renderCharacterPicker();
+ document.getElementById('characterOverlay').classList.add('show');
+ characterModalOpen=true;
+}
+function renderCharacterPicker(){
+ const onlineRoom=window.MCOnline&&window.MCOnline.room;
+ const n=onlineRoom?1:+document.getElementById('count').value,wrap=document.getElementById('characterChoices');
+ pendingHeroes=pendingHeroes.slice(0,n);while(pendingHeroes.length<n)pendingHeroes.push(HEROES[pendingHeroes.length%HEROES.length].id);
+ wrap.innerHTML='';
+ for(let i=0;i<n;i++){
+  const hero=HEROES.find(h=>h.id===pendingHeroes[i])||HEROES[0];
+  const card=document.createElement('div');card.className='hero-pick-card';card.style.animationDelay=(i*35)+'ms';
+  card.innerHTML=`<div class="hero-pick-head"><div class="hero-portrait" style="--heroGlow:${hero.glow}">${hero.emoji}<span style="position:absolute;right:-5px;bottom:1px;font-size:1.2rem">${hero.weapon}</span></div><div><small>${onlineRoom?'YOUR CHAMPION':'CHALLENGER '+(i+1)}</small><strong>${onlineRoom?(onlineRoom.players.find(p=>p.id===window.MCOnline.myId)?.name||'Your fighter'):'Player '+(i+1)}</strong><small>${hero.role}</small></div></div><div class="hero-class-options">${HEROES.map(h=>`<button type="button" class="hero-class ${h.id===hero.id?'selected':''}" style="--heroGlow:${h.glow}" data-player="${i}" data-hero="${h.id}"><span>${h.emoji}</span>${h.name}<small>${h.weapon} ${h.role}</small></button>`).join('')}</div>`;
+  wrap.appendChild(card);
+ }
+ wrap.querySelectorAll('.hero-class').forEach(btn=>btn.addEventListener('click',()=>{
+  const i=+btn.dataset.player;pendingHeroes[i]=btn.dataset.hero;
+  const card=btn.closest('.hero-pick-card');const h=HEROES.find(x=>x.id===btn.dataset.hero);
+  card.querySelectorAll('.hero-class').forEach(b=>b.classList.toggle('selected',b===btn));
+  card.querySelector('.hero-portrait').innerHTML=h.emoji+'<span style="position:absolute;right:-5px;bottom:1px;font-size:1.2rem">'+h.weapon+'</span>';
+  card.querySelector('.hero-portrait').style.setProperty('--heroGlow',h.glow);
+  card.querySelector('.hero-pick-head div:last-child small:last-child').textContent=h.role;
+  card.animate([{transform:'scale(1)'},{transform:'scale(1.015)'},{transform:'scale(1)'}],{duration:300});
+  document.getElementById('characterProgress').textContent='Player '+(i+1)+' chose '+h.name;
+ }));
+ document.getElementById('characterProgress').textContent=onlineRoom?'Choose your champion, then ready up in the realm.':n+' challengers · choose each champion';
+}
+function confirmCharacters(){
+ chosenHeroes=[...pendingHeroes];characterModalOpen=false;document.getElementById('characterOverlay').classList.remove('show');
+ const onlineRoom=window.MCOnline&&window.MCOnline.room;
+ if(onlineRoom){const socket=window.MCOnline.socket;if(!socket||!socket.connected){document.getElementById('onlineNotice').textContent='Connect to the online server first.';return;}socket.emit('game:ready',{hero:chosenHeroes[0]||'knight'});document.getElementById('onlineNotice').textContent='Champion selected! Waiting for everyone to ready up.';return;}
+ if(interval)clearInterval(interval);document.getElementById('overlay').classList.remove('show');G=newGameState();G.order=shuffled(BANK.map((_,i)=>i));G.active=true;document.getElementById('start').textContent='Match in progress';document.getElementById('start').disabled=true;nextQuestion();interval=setInterval(tick,100);
+}
+function restartGame(){if(window.MCOnline?.room){const sock=window.MCOnline.socket;if(window.MCOnline.room.hostId===window.MCOnline.myId&&sock?.connected)sock.emit('game:reset');document.getElementById('overlay').classList.remove('show');hideCutscene();document.getElementById('start').disabled=false;document.getElementById('start').textContent='Start Match';document.getElementById('onlineNotice').textContent='Waiting for the host to start another battle.';return;}if(interval)clearInterval(interval);document.getElementById('characterOverlay').classList.remove('show');characterModalOpen=false;G=null;document.getElementById('overlay').classList.remove('show');hideCutscene();document.getElementById('start').disabled=false;document.getElementById('start').textContent='Start Match';document.getElementById('notice').textContent='Press Start Match to begin.';document.getElementById('round').textContent='ROUND 1';document.getElementById('clock').textContent='MATCH '+(+document.getElementById('duration').value)+':00';document.getElementById('qtime').textContent='—';document.getElementById('qbar').style.width='100%';document.getElementById('prompt').textContent='Ready?';document.getElementById('category').textContent=document.getElementById('topic').value==='Mixed'?'Mixed Topics':document.getElementById('topic').value;document.getElementById('diff').textContent='MIXED';document.getElementById('reward').textContent='Choose settings, then start';document.getElementById('choices').innerHTML='';document.getElementById('players').innerHTML='';document.getElementById('turnbanner').textContent='✦ Waiting for the battle to begin ✦'}
+function nextQuestion(nextPlayer=null){if(!G||G.done)return;if(G.players.filter(p=>p.alive).length<=1){finish('elimination');return}if(G.left<=0){finish('time');return}
+G.round++;G.answered=0;G.active=true;G.sceneLock=false;G.players.forEach(p=>{p.answer=null;p.target=null;p.submitted=false;p.status=p.alive?'Waiting for your turn.':'Eliminated'});
+const topic=document.getElementById('topic').value,setting=document.getElementById('difficulty').value;
+let eligible=BANK.filter(q=>(topic==='Mixed'||q.cat===topic)&&(setting==='Mixed'||q.d===setting));
+if(!eligible.length)eligible=BANK.filter(q=>topic==='Mixed'||q.cat===topic);
+if(!eligible.length)eligible=BANK;
+const last=G.q;let pool=eligible.filter(q=>q!==last);if(!pool.length)pool=eligible;
+const q=pool[Math.floor(Math.random()*pool.length)];G.q=q;G.qleft=q.t;G.currentPlayer=(nextPlayer!==null&&G.players[nextPlayer]&&G.players[nextPlayer].alive)?nextPlayer:G.players.findIndex(p=>p.alive);
+document.getElementById('round').textContent='ROUND '+G.round;document.getElementById('category').textContent=q.cat;document.getElementById('diff').textContent=q.d.toUpperCase();document.getElementById('diff').className='diff '+q.d;document.getElementById('reward').textContent=q.damage+' damage · '+q.points+' points';document.getElementById('prompt').textContent=q.q;
+const choices=document.getElementById('choices');choices.innerHTML='';q.a.forEach((a,i)=>{const b=document.createElement('button');b.className='choice';b.textContent=String.fromCharCode(65+i)+'. '+a;b.disabled=true;b.id='choice'+i;b.onclick=()=>pickAnswer(G.currentPlayer,i);choices.appendChild(b)});
+renderPlayers();document.getElementById('notice').textContent='Choose a target, then click your answer. One click locks it in!';renderTimer()}
+function applyOnlineGameState(state){
+ G=state;G.sceneLock=!!state.transitioning;const q=G.q;
+ document.getElementById('start').disabled=true;document.getElementById('start').textContent='Online Battle in Progress';
+ if(!q)return;
+ document.getElementById('overlay').classList.remove('show');document.getElementById('round').textContent='ROUND '+G.round;document.getElementById('clock').textContent='MATCH '+fmt(G.left);document.getElementById('category').textContent=q.cat;document.getElementById('diff').textContent=q.d.toUpperCase();document.getElementById('diff').className='diff '+q.d;document.getElementById('reward').textContent=q.damage+' damage · '+q.points+' points';document.getElementById('prompt').textContent=q.q;
+ const choices=document.getElementById('choices');const key=G.round+':'+q.q;if(choices.dataset.questionKey!==key){choices.dataset.questionKey=key;choices.innerHTML='';q.a.forEach((a,i)=>{const b=document.createElement('button');b.className='choice';b.textContent=String.fromCharCode(65+i)+'. '+a;b.id='choice'+i;b.onclick=()=>pickAnswer(G.currentPlayer,i);choices.appendChild(b)});}
+ if(state.lastAction){const a=state.lastAction;[...choices.children].forEach((b,i)=>{b.disabled=true;if(i===a.correctIndex)b.classList.add('correct');if(a.answerIndex===i&&!a.correct)b.classList.add('wrong')});if(a.playerIndex!==undefined){const pl=G.players[a.playerIndex];document.getElementById('notice').textContent=a.timeout?(pl?.name+' ran out of time!'):(pl?.status||'Turn resolved.');}}
+ else document.getElementById('notice').textContent=G.players[G.currentPlayer]?.id===window.MCOnline?.myId?'Your turn! Choose a target and answer.':(G.players[G.currentPlayer]?.name||'Opponent')+' is answering…';
+ renderPlayers();renderTimer();
+ if(G.done){const ranked=[...G.players].sort((a,b)=>b.score-a.score||b.hp-a.hp||b.damage-a.damage),winner=ranked[0];document.getElementById('endtitle').textContent=(winner?.name||'A champion')+' wins!';document.getElementById('endtext').textContent='Final standings: '+ranked.map((p,i)=>`${i+1}. ${p.name}: ${p.score} points, ${p.hp} HP remaining`).join(' · ');document.getElementById('overlay').classList.add('show');document.getElementById('start').disabled=false;document.getElementById('start').textContent='Online Battle Finished';}
+}
+window.applyOnlineGameState=applyOnlineGameState;
+function renderPlayers(){if(!G)return;const el=document.getElementById('players');el.innerHTML='';G.players.forEach((p,i)=>{const online=window.MCOnline&&window.MCOnline.room,myId=window.MCOnline?.myId;const isTurn=G.active&&!G.sceneLock&&i===G.currentPlayer&&!p.submitted&&p.alive&&(!online||p.id===myId);const box=document.createElement('div');box.className='player'+(p.alive?'':' dead')+(isTurn?' active-turn':'');box.id='player'+i;const targets=G.players.map((t,j)=>({t,j})).filter(x=>x.j!==i&&x.t.alive);let opts=targets.map(x=>`<option value="${x.j}">${escapeHtml(x.t.name)}</option>`).join('');const hero=HEROES.find(h=>h.id===p.hero)||HEROES[0];box.style.setProperty('--fighter-glow',hero.glow);box.innerHTML=`${isTurn?'<div class="turntag">Your turn</div>':''}<div class="playerhead"><span class="playername">${escapeHtml(p.name)}${p.alive?'':' ☠'}</span><span class="hpnum">${p.hp}/150 HP</span></div><div class="fighter-line"><div class="fighter-avatar" aria-label="${hero.name}">${hero.emoji}<span class="weapon">${hero.weapon}</span></div><div class="fighter-info"><div class="fighter-class">${hero.name}</div><div class="fighter-tagline">${hero.tagline}</div></div></div><div class="health"><div style="width:${p.hp/150*100}%"></div></div><div class="pstats"><span>Score <b>${p.score}</b></span><span>Damage <b>${p.damage}</b></span></div><div class="targetrow"><label for="target${i}">Target</label><select id="target${i}" ${!isTurn||!targets.length?'disabled':''}>${opts||'<option value="">No targets</option>'}</select></div><div class="playerstatus" id="status${i}">${escapeHtml(p.status)}</div>`;el.appendChild(box)});
+[...document.getElementById('choices').children].forEach(b=>b.disabled=!G.active||G.done||G.sceneLock||G.currentPlayer<0||!G.players[G.currentPlayer]||!G.players[G.currentPlayer].alive||G.players[G.currentPlayer].submitted||(window.MCOnline?.room&&G.players[G.currentPlayer].id!==window.MCOnline.myId));document.getElementById('turnbanner').textContent=G.active&&G.currentPlayer>=0&&!G.done?(G.players[G.currentPlayer].name+' — choose a target and tap an answer'):'✦ Round resolved ✦'}
+function pickAnswer(i,k){if(!G||!G.active||G.done||G.sceneLock)return;const online=window.MCOnline&&window.MCOnline.room;if(online){const p=G.players[i],myId=window.MCOnline.myId;if(!p||p.id!==myId||i!==G.currentPlayer)return;const select=document.getElementById('target'+i),target=select&&select.value!==''?+select.value:null;if(target===null||!G.players[target]||!G.players[target].alive){document.getElementById('notice').textContent='Choose a living opponent as your target first.';return;}const socket=window.MCOnline.socket;if(socket&&socket.connected)socket.emit('game:answer',{targetIndex:target,answerIndex:k});return;}const p=G.players[i];if(!p||!p.alive||p.submitted||i!==G.currentPlayer)return;const select=document.getElementById('target'+i);const target=select&&select.value!==''?+select.value:null;if(target===null||!G.players[target]||!G.players[target].alive){document.getElementById('notice').textContent='Choose a living opponent as your target first.';return}
+p.target=target;p.submitted=true;p.answer=k;G.answered++;G.active=false;G.sceneLock=true;const q=G.q,t=G.players[target];
+[...document.getElementById('choices').children].forEach((b,j)=>{b.disabled=true;if(j===k)b.classList.add(k===q.c?'correct':'wrong');if(j===q.c)b.classList.add('correct')});
+let title,txt,ico,kind;
+if(k===q.c){p.score+=q.points;p.damage+=q.damage;t.hp=Math.max(0,t.hp-q.damage);if(t.hp===0)t.alive=false;p.status='Correct! +'+q.points+' points · '+q.damage+' damage to '+t.name+'.';title='SPELL STRIKE!';txt=p.name+' lands '+q.damage+' damage on '+t.name+'!  +'+q.points+' points';ico='⚔️';kind='hit';playBattleSound(true)}else{p.status='Miss! No points or damage.';title='SPELL MISSED!';txt=p.name+' missed the answer. No damage dealt.';ico='💨';kind='miss';playBattleSound(false)}
+document.getElementById('status'+i).textContent=p.status;document.getElementById('notice').textContent=p.status;renderPlayers();if(k===q.c){animateCombat(i,target,q.damage,q.d);showCombatCutscene(i,target,q.damage,q.d)}else{showCutscene(title,txt,ico,kind)}
+setTimeout(()=>{if(!G||G.done)return;hideCutscene();G.sceneLock=false;if(G.players.filter(x=>x.alive).length<=1){finish('elimination');return}let next=G.currentPlayer;for(let n=0;n<G.players.length;n++){next=(next+1)%G.players.length;if(G.players[next].alive)break}nextQuestion(next);},k===q.c?2700:1350)}
+function animateCombat(attackerIndex,targetIndex,damage,difficulty='Easy'){
+ const attacker=document.getElementById('player'+attackerIndex),target=document.getElementById('player'+targetIndex);if(!attacker||!target)return;
+ const level=String(difficulty).toLowerCase();
+ const aura=level==='hard'?'hard':level==='medium'?'medium':'easy';
+ attacker.classList.remove('weapon-aura-easy','weapon-aura-medium','weapon-aura-hard');
+ attacker.classList.add('attacking','weapon-aura-'+aura);target.classList.add('hit');
+ const slash=document.createElement('div');slash.className='combat-slash aura-'+aura;slash.textContent=(HEROES.find(h=>h.id===G.players[attackerIndex].hero)||HEROES[0]).weapon;target.appendChild(slash);
+ const num=document.createElement('div');num.className='combat-hit-number';num.textContent='-'+damage+' HP';target.appendChild(num);
+ if(level==='hard'){const burst=document.createElement('div');burst.className='combat-slash aura-hard';burst.textContent='✦';burst.style.fontSize='5rem';burst.style.animationDelay='.08s';target.appendChild(burst);setTimeout(()=>burst.remove(),850)}
+ setTimeout(()=>{attacker.classList.remove('attacking','weapon-aura-'+aura);target.classList.remove('hit');slash.remove();num.remove()},1100);
+}
+function revealRound(){if(!G||G.done)return;G.active=false;G.sceneLock=true;[...document.getElementById('choices').children].forEach((b,k)=>{b.disabled=true;if(k===G.q.c)b.classList.add('correct')});renderPlayers();showCutscene('TIME IS UP!','The next challenger steps into the arena.','⌛','reveal');setTimeout(()=>{if(!G||G.done)return;hideCutscene();let next=G.currentPlayer;for(let n=0;n<G.players.length;n++){next=(next+1)%G.players.length;if(G.players[next].alive)break}nextQuestion(next)},1000)}
+function showCombatCutscene(attackerIndex,targetIndex,damage,difficulty){
+ const attacker=G.players[attackerIndex],target=G.players[targetIndex];
+ const aHero=HEROES.find(h=>h.id===attacker.hero)||HEROES[0],tHero=HEROES.find(h=>h.id===target.hero)||HEROES[0];
+ const attacks={mage:{emoji:'🔥',type:'fire',title:'FIREBALL!',line:'A blazing spell rockets across the arena!'},knight:{emoji:'⚡',type:'arcane',title:'THUNDER STRIKE!',line:'Lightning bursts from the knight’s weapon!'},ranger:{emoji:'🏹',type:'arrow',title:'TRUE-SHOT!',line:'A magically charged arrow streaks toward its mark!'},berserker:{emoji:'🪓',type:'fire',title:'BERSERKER SMASH!',line:'A blazing axe swing crashes into the target!'},frost:{emoji:'❄️',type:'ice',title:'FROST BLAST!',line:'A freezing burst explodes in a shower of ice!'},shadow:{emoji:'🌑',type:'shadow',title:'SHADOW DASH!',line:'A dark streak flashes straight through the arena!'},beast:{emoji:'🐾',type:'fire',title:'FERAL POUNCE!',line:'The wild beast launches into a savage pounce!'}};
+ const move=attacks[aHero.id]||attacks.mage;
+ const stage=document.getElementById('battleStage');stage.dataset.hero=aHero.id;stage.dataset.target=tHero.id;
+ const el=document.getElementById('cutscene');el.className='cutscene show hit';el.dataset.attack=move.type;
+ document.getElementById('sceneAttacker').innerHTML=heroArtMarkup(aHero.id)||aHero.emoji;document.getElementById('sceneDefender').innerHTML=heroArtMarkup(tHero.id)||tHero.emoji;document.getElementById('sceneAttackerWeapon').textContent=aHero.weapon;
+ document.getElementById('sceneAttackerName').textContent=attacker.name+' · '+aHero.name;document.getElementById('sceneDefenderName').textContent=target.name+' · '+tHero.name;
+ document.getElementById('sceneProjectile').textContent=move.emoji;document.getElementById('sceneImpact').textContent=aHero.id==='frost'?'💥❄️':aHero.id==='mage'?'💥🔥':'💥';
+ document.getElementById('cutTitle').textContent=move.title;document.getElementById('cutText').textContent=move.line+' '+damage+' DAMAGE!';
+ document.getElementById('cutIcon').textContent=move.emoji;
+ document.querySelector('.cutscene-kicker').textContent=String(difficulty||'Easy').toUpperCase()+' HIT · CINEMATIC ATTACK';
+}
+function showCutscene(title,txt,icon,kind){const el=document.getElementById('cutscene');el.removeAttribute('data-attack');el.className='cutscene show '+(kind||'');document.querySelector('.cutscene-kicker').textContent='BATTLE MOMENT';document.getElementById('cutTitle').textContent=title;document.getElementById('cutText').textContent=txt;document.getElementById('cutIcon').textContent=icon||'⚔️'}
+function hideCutscene(){const el=document.getElementById('cutscene');if(el)el.className='cutscene'}
+function playBattleSound(correct){if(!musicOn)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();audioCtx.resume();const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.type=correct?'sawtooth':'triangle';osc.frequency.setValueAtTime(correct?520:220,audioCtx.currentTime);osc.frequency.exponentialRampToValueAtTime(correct?150:100,audioCtx.currentTime+.22);gain.gain.setValueAtTime(.0001,audioCtx.currentTime);gain.gain.exponentialRampToValueAtTime(correct?.08:.04,audioCtx.currentTime+.02);gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.28);osc.connect(gain);gain.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+.3)}catch(e){}}
+function tick(){if(!G||G.done)return;G.left=Math.max(0,G.left-.1);if(G.active)G.qleft=Math.max(0,G.qleft-.1);document.getElementById('clock').textContent='MATCH '+fmt(G.left);renderTimer();if(G.active&&G.qleft<=0){const p=G.players[G.currentPlayer];if(p&&p.alive&&!p.submitted){p.status='Time expired — no points.';p.submitted=true;p.answer=-1;G.active=false;G.sceneLock=true;document.getElementById('notice').textContent=p.name+' ran out of time!';showCutscene('TIME IS UP!',p.name+' missed the chance to strike.','⌛','miss');setTimeout(()=>{if(!G||G.done)return;hideCutscene();G.sceneLock=false;if(G.players.filter(x=>x.alive).length<=1){finish('elimination');return}let next=G.currentPlayer;for(let n=0;n<G.players.length;n++){next=(next+1)%G.players.length;if(G.players[next].alive)break}nextQuestion(next)},1000)}}if(G.left<=0&&!G.done)finish('time')}
+function renderTimer(){if(!G||!G.q)return;document.getElementById('qtime').textContent=G.qleft.toFixed(1)+'s';document.getElementById('qbar').style.width=(G.qleft/G.q.t*100)+'%';document.getElementById('qbar').style.background=G.qleft<=3?'#ff8e91':'#75dcff'}
+function fmt(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function finish(reason){if(!G||G.done)return;G.done=true;G.active=false;G.sceneLock=true;hideCutscene();if(interval)clearInterval(interval);const living=G.players.filter(p=>p.alive).sort((a,b)=>b.score-a.score||b.damage-a.damage);let winner;if(reason==='elimination'&&living.length===1)winner=living[0];else winner=[...G.players].sort((a,b)=>b.score-a.score||b.damage-a.damage)[0];document.getElementById('endtitle').textContent=(living.length===0?'Battle over':winner.name+' wins!');document.getElementById('endtext').textContent='Final standings: '+[...G.players].sort((a,b)=>b.score-a.score||b.damage-a.damage).map((p,i)=>`${i+1}. ${p.name}: ${p.score} points, ${p.hp} HP remaining`).join(' · ');document.getElementById('overlay').classList.add('show');document.getElementById('notice').textContent='Match complete.'}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function announceSetting(message,anchor){const toastEl=document.getElementById('settingsToast');if(!toastEl)return;toastEl.textContent='✦ '+message+' ✦';toastEl.classList.remove('show');void toastEl.offsetWidth;toastEl.classList.add('show');if(anchor){anchor.classList.remove('setting-change');void anchor.offsetWidth;anchor.classList.add('setting-change');setTimeout(()=>anchor.classList.remove('setting-change'),750)}}
+function bindSettingAnimations(){
+ const ids=['mode','count','topic','difficulty','duration'];
+ const labels={mode:v=>v==='Free-for-All'?'Free-for-All':v,count:v=>v+' Players',topic:v=>v==='Mixed'?'Mixed topics':v,difficulty:v=>v==='Mixed'?'Mixed':v,duration:v=>v+' Minutes'};
+ const glyphs={mode:'⚔',count:'♟',topic:'✧',difficulty:'☄',duration:'⌛'};
+ ids.forEach(id=>{
+  const select=document.getElementById(id),station=document.querySelector('.setting-station[data-setting="'+id+'"]'),trigger=station.querySelector('.setting-trigger'),panel=station.querySelector('.setting-options'),value=document.getElementById('value-'+id);
+  value.textContent=labels[id](select.value);
+  Array.from(select.options).forEach((opt,index)=>{
+   const btn=document.createElement('button');btn.type='button';btn.className='setting-option'+(id==='count'?' player-option':'');btn.textContent=id==='count'?opt.value:opt.text;
+   if(id==='count'){const small=document.createElement('small');small.textContent=({'2':'DUEL','3':'TRIO','4':'SQUAD','5':'PARTY','6':'PARTY','7':'RAID','8':'RAID','9':'LEGION','10':'LEGION'})[opt.value];btn.appendChild(small)}
+   btn.dataset.value=opt.value;btn.setAttribute('aria-pressed',String(opt.value===select.value));if(opt.value===select.value)btn.classList.add('selected');
+   btn.addEventListener('click',()=>chooseSetting(id,opt.value));
+   panel.appendChild(btn);
+  });
+  trigger.addEventListener('click',()=>{const isOpen=trigger.getAttribute('aria-expanded')==='true';closeSettingPanels();if(!isOpen){station.classList.add('open');trigger.setAttribute('aria-expanded','true');panel.hidden=false;panel.classList.remove('closing');panel.querySelectorAll('.setting-option').forEach((b,i)=>{b.style.animationDelay=(i*22)+'ms'});}});
+  select.addEventListener('change',()=>{value.textContent=labels[id](select.value);if(id==='count')syncPlayerCount(+select.value,false);});
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSettingPanels()});
+ document.addEventListener('click',e=>{if(!e.target.closest('.setting-station'))closeSettingPanels()});
+}
+function closeSettingPanels(){document.querySelectorAll('.setting-station.open').forEach(station=>{const panel=station.querySelector('.setting-options'),trigger=station.querySelector('.setting-trigger');if(!panel.hidden){panel.classList.add('closing');setTimeout(()=>{panel.hidden=true;panel.classList.remove('closing')},170)}station.classList.remove('open');trigger.setAttribute('aria-expanded','false')})}
+function chooseSetting(id,val){
+ const select=document.getElementById(id),station=document.querySelector('.setting-station[data-setting="'+id+'"]');
+ select.value=String(val);document.getElementById('value-'+id).textContent= id==='count'?val+' Players':id==='duration'?val+' Minutes':id==='topic'&&val==='Mixed'?'Mixed topics':val;
+ station.querySelectorAll('.setting-option').forEach(b=>{const yes=b.dataset.value===String(val);b.classList.toggle('selected',yes);b.setAttribute('aria-pressed',String(yes))});
+ if(id==='count')syncPlayerCount(+val,false);
+ select.dispatchEvent(new Event('change',{bubbles:true}));
+ station.classList.remove('picked');void station.offsetWidth;station.classList.add('picked');setTimeout(()=>station.classList.remove('picked'),650);
+ announceSetting(document.getElementById('value-'+id).textContent+' selected',station);
+ closeSettingPanels();
+ if(id==='duration')document.getElementById('clock').textContent='MATCH '+val+':00';
+ if(id==='topic')document.getElementById('category').textContent=val==='Mixed'?'Mixed Topics':val;
+ if(id==='difficulty')document.getElementById('diff').textContent=val.toUpperCase();
+}
+function syncPlayerCount(n,animate){const count=document.getElementById('count');if(!count)return;count.value=String(n);const caption=document.getElementById('countCaption');if(caption)caption.textContent='✦ '+n+' challengers enter the arena ✦'}
+function setPlayerCount(n,announce){chooseSetting('count',n)}
+function syncPlayerCount(n,animate){const count=document.getElementById('count');if(!count)return;count.value=String(n);document.querySelectorAll('.player-pick').forEach(btn=>{const selected=+btn.dataset.count===n;btn.classList.toggle('selected',selected);btn.setAttribute('aria-pressed',String(selected));if(selected&&animate){btn.classList.remove('just-picked');void btn.offsetWidth;btn.classList.add('just-picked');setTimeout(()=>btn.classList.remove('just-picked'),650)}});const caption=document.getElementById('countCaption');if(caption)caption.textContent='✦ '+n+' challenger'+(n===1?'':'s')+' enter'+(n===1?'s':'')+' the arena ✦'}
+function setPlayerCount(n,announce){syncPlayerCount(n,true);const field=document.querySelector('.player-field');if(announce)announceSetting(n+' players selected',field)}
+const toast=document.createElement('div');toast.className='settings-toast';toast.id='settingsToast';toast.setAttribute('aria-live','polite');document.body.appendChild(toast);
+const originalSelectMap=selectMap;selectMap=function(key){originalSelectMap(key);const banner=document.getElementById('mapBanner');banner.classList.remove('realm-shift');void banner.offsetWidth;banner.classList.add('realm-shift');const card=document.querySelector('.mapcard[data-map="'+key+'"]');if(card)announceSetting(MAPS[key].name+' selected',card);if(musicOn&&audioCtx){if(musicTimer)clearTimeout(musicTimer);playAmbient()}};
+bindSettingAnimations();selectMap('frozen');restartGame();
+</script>
+<!-- Mythic Clash synchronized online battle layer -->
+<style>
+#mcOnlineBattle{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at top,#183c60,#050b16 75%);color:#fff;display:none;overflow:auto;font-family:system-ui,sans-serif;padding:clamp(12px,3vw,28px);box-sizing:border-box}
+#mcOnlineBattle.show{display:flex;align-items:center;justify-content:center}
+.mcob-panel{width:min(900px,100%);background:#10243b;border:1px solid #64dfff;border-radius:20px;padding:clamp(16px,3vw,28px);box-shadow:0 0 40px #00bfff30}
+.mcob-title{font-size:clamp(24px,4vw,38px);font-weight:900;color:#fff;margin:0 0 8px}
+.mcob-sub{color:#d8eaff;font-weight:600}
+.mcob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin:16px 0}
+.mcob-player{background:#091728;border:1px solid #42617e;border-radius:12px;padding:12px;color:#fff}
+.mcob-player.active{border:2px solid #79e8ff;box-shadow:0 0 14px #64dfff30}
+.mcob-player b{color:#fff}.mcob-hp{height:9px;background:#283c50;border-radius:20px;overflow:hidden;margin:7px 0}.mcob-hp i{display:block;height:100%;background:linear-gradient(90deg,#3fe2a0,#a4ffcd)}
+.mcob-q{font-size:clamp(20px,3vw,30px);line-height:1.3;color:#fff;font-weight:900;margin:20px 0;padding:18px;background:#061321;border:1px solid #476783;border-radius:12px}
+.mcob-answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mcob-answers button{background:#f8fbff;color:#102035;border:2px solid #d4e6f5;border-radius:12px;padding:14px;font-weight:800;font-size:16px;cursor:pointer}
+.mcob-answers button:hover{background:#d8f5ff;border-color:#53dfff}.mcob-answers button:disabled{opacity:.6;cursor:default}
+.mcob-btn{background:#53dfff;color:#071525;border:0;border-radius:10px;padding:11px 17px;font-weight:900;cursor:pointer;margin-top:12px}
+.mcob-notice{min-height:28px;color:#fff;font-weight:800;margin:12px 0}
+@media(max-width:560px){.mcob-answers{grid-template-columns:1fr}.mcob-panel{padding:14px}}
+</style>
+<div id="mcOnlineBattle" aria-live="polite"><div class="mcob-panel">
+ <div class="mcob-title">⚔ MYTHIC CLASH — ONLINE BATTLE</div>
+ <div class="mcob-sub" id="mcobMeta">Waiting for host…</div>
+ <div class="mcob-grid" id="mcobPlayers"></div>
+ <div class="mcob-q" id="mcobQuestion">The host will start the match.</div>
+ <div class="mcob-sub" id="mcobTurn"></div>
+ <div class="mcob-answers" id="mcobAnswers"></div>
+ <div class="mcob-notice" id="mcobNotice"></div>
+ <button class="mcob-btn" id="mcobExit">Return to game</button>
+</div></div>
+<script>
+(function(){
+ const $=id=>document.getElementById(id), ob=$('mcOnlineBattle');
+ let onlineState=null, mySocket=null, onlineRoom=null, isHost=false, lastShownQuestionId=null;
+ function onReady(){
+   const api=window.MCOnline;if(!api||!api.socket)return setTimeout(onReady,400);
+   mySocket=api.socket;
+   // Reconnect-safe event wiring (remove previous handlers to avoid duplicate callbacks)
+   mySocket.off('onlinebattle:state');mySocket.off('onlinebattle:question');mySocket.off('onlinebattle:result');mySocket.off('onlinebattle:ended');
+   mySocket.on('onlinebattle:state',s=>{onlineState=s;render()});
+   mySocket.on('onlinebattle:question',q=>{onlineState={...(onlineState||{}),question:q};renderQuestion(q)});
+   mySocket.on('onlinebattle:result',r=>{$('mcobNotice').textContent=r.message||'';disableAnswers();});
+   mySocket.on('onlinebattle:ended',s=>{onlineState=s;render();$('mcobNotice').textContent='Match ended!';});
+   mySocket.on('room:update',r=>{onlineRoom=r;isHost=r.hostId===mySocket.id});
+   mySocket.on('room:joined',r=>{onlineRoom=r;isHost=r.hostId===mySocket.id});
+   const start=$('startOnlineMatch'); if(start){start.addEventListener('click',()=>{
+      if(!api.room||!mySocket.connected)return;
+      if(api.room.hostId!==mySocket.id){alert('Only the room host can start the online match.');return;}
+      const bank=window.MYTHIC_BANK||[];
+      mySocket.emit('onlinebattle:start',{bank,duration:Number($('duration')?.value)||180,topic:$('topic')?.value||'Mixed',difficulty:$('difficulty')?.value||'Mixed'});
+   });}
+   $('mcobExit').onclick=()=>{ob.classList.remove('show');};
+ }
+ function render(){
+   if(!onlineState)return;
+   ob.classList.add('show');
+   $('mcobMeta').textContent='Online · '+(onlineState.left!=null?Math.ceil(onlineState.left)+'s remaining':'Battle in progress');
+   const ps=onlineState.players||[];
+   $('mcobPlayers').innerHTML=ps.map(p=>`<div class="mcob-player ${p.id===onlineState.currentPlayerId?'active':''}"><b>${esc(p.name)}</b><div class="mcob-hp"><i style="width:${Math.max(0,p.hp)/150*100}%"></i></div><span>${p.hp} HP · ${p.score} pts</span></div>`).join('');
+   if(onlineState.question)renderQuestion(onlineState.question);
+   if(onlineState.done)$('mcobTurn').textContent='Winner: '+(onlineState.winner||'Battle complete');
+ }
+ function renderQuestion(q){
+   if(!q)return; ob.classList.add('show');
+   $('mcobQuestion').textContent=q.q;
+   const canAnswer=q.playerId===mySocket.id;
+   $('mcobTurn').textContent=canAnswer?'YOUR TURN — select a target, then answer':('Waiting for '+(q.playerName||'challenger')+' to answer…');
+   $('mcobAnswers').innerHTML='';
+   q.a.forEach((answer,k)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+k)+'. '+answer;b.disabled=!canAnswer;b.onclick=()=>{
+      const alive=(onlineState?.players||[]).filter(p=>p.id!==mySocket.id&&p.hp>0);
+      if(!alive.length){$('mcobNotice').textContent='No opponents remain.';return}
+      const target=alive[0];mySocket.emit('onlinebattle:answer',{answerIndex:k,targetId:target.id,questionId:q.id});disableAnswers();
+   };$('mcobAnswers').appendChild(b)});
+ }
+ function disableAnswers(){[...$('mcobAnswers').children].forEach(b=>b.disabled=true)}
+ function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+ onReady();
+})();
+</script>
+
+
+<!-- Mythic Clash synchronized online battle layer -->
+<style>
+#mcOnlineBattle{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at top,#183c60,#050b16 75%);color:#fff;display:none;overflow:auto;font-family:system-ui,sans-serif;padding:clamp(12px,3vw,28px);box-sizing:border-box}
+#mcOnlineBattle.show{display:flex;align-items:center;justify-content:center}
+.mcob-panel{width:min(900px,100%);background:#10243b;border:1px solid #64dfff;border-radius:20px;padding:clamp(16px,3vw,28px);box-shadow:0 0 40px #00bfff30}
+.mcob-title{font-size:clamp(24px,4vw,38px);font-weight:900;color:#fff;margin:0 0 8px}
+.mcob-sub{color:#d8eaff;font-weight:600}
+.mcob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin:16px 0}
+.mcob-player{background:#091728;border:1px solid #42617e;border-radius:12px;padding:12px;color:#fff}
+.mcob-player.active{border:2px solid #79e8ff;box-shadow:0 0 14px #64dfff30}
+.mcob-player b{color:#fff}.mcob-hp{height:9px;background:#283c50;border-radius:20px;overflow:hidden;margin:7px 0}.mcob-hp i{display:block;height:100%;background:linear-gradient(90deg,#3fe2a0,#a4ffcd)}
+.mcob-q{font-size:clamp(20px,3vw,30px);line-height:1.3;color:#fff;font-weight:900;margin:20px 0;padding:18px;background:#061321;border:1px solid #476783;border-radius:12px}
+.mcob-answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mcob-answers button{background:#f8fbff;color:#102035;border:2px solid #d4e6f5;border-radius:12px;padding:14px;font-weight:800;font-size:16px;cursor:pointer}
+.mcob-answers button:hover{background:#d8f5ff;border-color:#53dfff}.mcob-answers button:disabled{opacity:.6;cursor:default}
+.mcob-btn{background:#53dfff;color:#071525;border:0;border-radius:10px;padding:11px 17px;font-weight:900;cursor:pointer;margin-top:12px}
+.mcob-notice{min-height:28px;color:#fff;font-weight:800;margin:12px 0}
+@media(max-width:560px){.mcob-answers{grid-template-columns:1fr}.mcob-panel{padding:14px}}
+</style>
+<div id="mcOnlineBattle" aria-live="polite"><div class="mcob-panel">
+ <div class="mcob-title">⚔ MYTHIC CLASH — ONLINE BATTLE</div>
+ <div class="mcob-sub" id="mcobMeta">Waiting for host…</div>
+ <div class="mcob-grid" id="mcobPlayers"></div>
+ <div class="mcob-q" id="mcobQuestion">The host will start the match.</div>
+ <div class="mcob-sub" id="mcobTurn"></div>
+ <div class="mcob-answers" id="mcobAnswers"></div>
+ <div class="mcob-notice" id="mcobNotice"></div>
+ <button class="mcob-btn" id="mcobExit">Return to game</button>
+</div></div>
+<script>
+(function(){
+ const $=id=>document.getElementById(id), ob=$('mcOnlineBattle');
+ let onlineState=null, mySocket=null, onlineRoom=null, isHost=false, lastShownQuestionId=null;
+ function onReady(){
+   const api=window.MCOnline;if(!api||!api.socket)return setTimeout(onReady,400);
+   mySocket=api.socket;
+   // Reconnect-safe event wiring (remove previous handlers to avoid duplicate callbacks)
+   mySocket.off('onlinebattle:state');mySocket.off('onlinebattle:question');mySocket.off('onlinebattle:result');mySocket.off('onlinebattle:ended');
+   mySocket.on('onlinebattle:state',s=>{onlineState=s;render()});
+   mySocket.on('onlinebattle:question',q=>{onlineState={...(onlineState||{}),question:q};renderQuestion(q)});
+   mySocket.on('onlinebattle:result',r=>{$('mcobNotice').textContent=r.message||'';disableAnswers();});
+   mySocket.on('onlinebattle:ended',s=>{onlineState=s;render();$('mcobNotice').textContent='Match ended!';});
+   mySocket.on('room:update',r=>{onlineRoom=r;isHost=r.hostId===mySocket.id});
+   mySocket.on('room:joined',r=>{onlineRoom=r;isHost=r.hostId===mySocket.id});
+   $('mcobExit').onclick=()=>{ob.classList.remove('show');};
+ }
+ function render(){
+   if(!onlineState)return;
+   ob.classList.add('show');
+   $('mcobMeta').textContent='Online · '+(onlineState.left!=null?Math.ceil(onlineState.left)+'s remaining':'Battle in progress');
+   const ps=onlineState.players||[];
+   $('mcobPlayers').innerHTML=ps.map(p=>`<div class="mcob-player ${p.id===onlineState.currentPlayerId?'active':''}"><b>${esc(p.name)}</b><div class="mcob-hp"><i style="width:${Math.max(0,p.hp)/150*100}%"></i></div><span>${p.hp} HP · ${p.score} pts</span></div>`).join('');
+   if(onlineState.question)renderQuestion(onlineState.question);
+   if(onlineState.done)$('mcobTurn').textContent='Winner: '+(onlineState.winner||'Battle complete');
+ }
+ function renderQuestion(q){
+   if(!q)return; ob.classList.add('show');
+   $('mcobQuestion').textContent=q.q;
+   const canAnswer=q.playerId===mySocket.id;
+   $('mcobTurn').textContent=canAnswer?'YOUR TURN — select a target, then answer':('Waiting for '+(q.playerName||'challenger')+' to answer…');
+   $('mcobAnswers').innerHTML='';
+   q.a.forEach((answer,k)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+k)+'. '+answer;b.disabled=!canAnswer;b.onclick=()=>{
+      const alive=(onlineState?.players||[]).filter(p=>p.id!==mySocket.id&&p.hp>0);
+      if(!alive.length){$('mcobNotice').textContent='No opponents remain.';return}
+      const target=alive[0];mySocket.emit('onlinebattle:answer',{answerIndex:k,targetId:target.id,questionId:q.id});disableAnswers();
+   };$('mcobAnswers').appendChild(b)});
+ }
+ function disableAnswers(){[...$('mcobAnswers').children].forEach(b=>b.disabled=true)}
+ function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+ onReady();
+})();
+</script>
+
+</body></html>
